@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { Status } from "tweeter-shared";
 import Post from "./Post";
-import useUserInfoReference from "../userInfo/UserInfoReferenceHook";
+import useUserNavigation from "../userInfo/UserNavigationHook";
 
 interface Props {
   value: Status;
 }
 
 const StatusItem = (props: Props) => {
-  const { navigateToUser } = useUserInfoReference();
+  const { navigateToUser } = useUserNavigation();
 
   return (
     <div className="col bg-light mx-0 px-0">
