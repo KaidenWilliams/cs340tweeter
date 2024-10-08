@@ -4,30 +4,44 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfo from "../userInfo/UserInfoHook";
-
-export const PAGE_SIZE = 10;
+import {
+  StatusItemPresenter,
+  StatusItemView,
+} from "../../presenter/StatusItemPresenter";
 
 interface Props {
-  loadItems: (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ) => Promise<[Status[], boolean]>;
-  itemDescription: string;
+  constructPresenter: (view: StatusItemView) => StatusItemPresenter;
 }
 
 const StatusItemScroller = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<Status[]>([]);
   const [newItems, setNewItems] = useState<Status[]>([]);
-  const [hasMoreItems, setHasMoreItems] = useState(true);
-  const [lastItem, setLastItem] = useState<Status | null>(null);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
-
-  const addItems = (newItems: Status[]) => setNewItems(newItems);
-
   const { displayedUser, authToken } = useUserInfo();
+
+  // Has an object View, the page is a view. Gives Presenter methods / callbacks that it can call
+  const view: StatusItemView = {
+    addItems: (newItems: Status[]) => setNewItems(newItems),
+    displayErrorStatement: displayErrorMessage,
+  };
+
+  // Makes an instance of a Presenter, which view then has a reference to
+  const [presenter] = useState<StatusItemPresenter>(
+    props.constructPresenter(view)
+  );
+
+  const reset = async () => {
+    setItems([]);
+    setNewItems([]);
+    setChangedDisplayedUser(true);
+    presenter.reset();
+  };
+
+  const loadMoreItems = async () => {
+    presenter.loadMoreItems(authToken!, displayedUser!.alias);
+    setChangedDisplayedUser(false);
+  };
 
   // Initialize the component whenever the displayed user changes
   useEffect(() => {
@@ -48,41 +62,13 @@ const StatusItemScroller = (props: Props) => {
     }
   }, [newItems]);
 
-  const reset = async () => {
-    setItems([]);
-    setNewItems([]);
-    setLastItem(null);
-    setHasMoreItems(true);
-    setChangedDisplayedUser(true);
-  };
-
-  const loadMoreItems = async () => {
-    try {
-      const [newItems, hasMore] = await props.loadItems(
-        authToken!,
-        displayedUser!.alias,
-        PAGE_SIZE,
-        lastItem
-      );
-
-      setHasMoreItems(hasMore);
-      setLastItem(newItems[newItems.length - 1]);
-      addItems(newItems);
-      setChangedDisplayedUser(false);
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to load ${props.itemDescription} items because of exception: ${error}`
-      );
-    }
-  };
-
   return (
     <div className="container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
         dataLength={items.length}
         next={loadMoreItems}
-        hasMore={hasMoreItems}
+        hasMore={presenter.hasMoreItems}
         loader={<h4>Loading...</h4>}
       >
         {items.map((item, index) => (
