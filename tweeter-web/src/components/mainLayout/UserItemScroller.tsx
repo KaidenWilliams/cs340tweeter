@@ -39,7 +39,7 @@ const UserItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems(authToken!, displayedUser!.alias);
+    await presenter.loadMoreItems(authToken!, displayedUser!.alias);
     setChangedDisplayedUser(false);
   };
 

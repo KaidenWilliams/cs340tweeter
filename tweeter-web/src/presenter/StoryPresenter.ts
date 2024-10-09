@@ -14,7 +14,7 @@ export class StoryPresenter extends StatusItemPresenter {
     this.statusService = new StatusService();
   }
 
-  // loadMoreItems method, which is called by the
+  // loadMoreItems method
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     try {
       const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(

@@ -7,6 +7,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationField from "../AuthenticationField";
 import useUserInfo from "../../userInfo/UserInfoHook";
+import { LoginPresenter, LoginView } from "../../../presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -22,6 +23,13 @@ const Login = (props: Props) => {
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
+  const view: LoginView = {
+    setDisplayUser: setDisplayedUser,
+    displayErrorStatement: displayErrorMessage,
+  };
+
+  const [presenter] = useState(new LoginPresenter(view));
+
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
   };
@@ -36,6 +44,7 @@ const Login = (props: Props) => {
     try {
       setIsLoading(true);
 
+      // TODO Kaiden
       const [user, authToken] = await login(alias, password);
 
       updateUserInfo(user, user, authToken, rememberMe);
@@ -52,20 +61,6 @@ const Login = (props: Props) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const login = async (
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> => {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
   };
 
   const inputFieldGenerator = () => {

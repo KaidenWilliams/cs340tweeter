@@ -41,5 +41,8 @@ export abstract class UserItemPresenter {
     this._hasMoreItems = true;
   }
 
-  public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
+  public abstract loadMoreItems(
+    authToken: AuthToken,
+    userAlias: string
+  ): Promise<void>;
 }
