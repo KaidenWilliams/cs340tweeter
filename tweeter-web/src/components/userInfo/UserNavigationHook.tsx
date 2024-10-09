@@ -1,42 +1,27 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
+import {
+  UserNavigationHookPresenter,
+  UserNavigationHookView,
+} from "../../presenter/UserNavigationHookPresenter";
 
 const useUserNavigation = () => {
   const { displayErrorMessage } = useToastListener();
 
   const { setDisplayedUser, currentUser, authToken } = useUserInfo();
 
+  const view: UserNavigationHookView = {
+    setDisplayUser: setDisplayedUser,
+    displayErrorStatement: displayErrorMessage,
+  };
+
+  // Can't use UseState but I think it is fine
+  const presenter = new UserNavigationHookPresenter(view);
+
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
-
-    try {
-      const alias = extractAlias(event.target.toString());
-      const user = await getUser(authToken!, alias);
-
-      if (!!user) {
-        if (currentUser!.equals(user)) {
-          setDisplayedUser(currentUser!);
-        } else {
-          setDisplayedUser(user);
-        }
-      }
-    } catch (error) {
-      displayErrorMessage(`Failed to get user because of exception: ${error}`);
-    }
-  };
-
-  const extractAlias = (value: string): string => {
-    const index = value.indexOf("@");
-    return value.substring(index);
-  };
-
-  const getUser = async (
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    const target = event.target.toString();
+    presenter.navigateToUser(currentUser!, target, authToken!);
   };
 
   return { navigateToUser };

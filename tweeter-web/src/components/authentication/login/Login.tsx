@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationField from "../AuthenticationField";
 import useUserInfo from "../../userInfo/UserInfoHook";
@@ -24,43 +23,32 @@ const Login = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const view: LoginView = {
-    setDisplayUser: setDisplayedUser,
+    setLoading: setIsLoading,
+    navigateToPage: navigate,
+    updateUser: updateUserInfo,
     displayErrorStatement: displayErrorMessage,
   };
 
   const [presenter] = useState(new LoginPresenter(view));
 
-  const checkSubmitButtonStatus = (): boolean => {
-    return !alias || !password;
+  const isSubmitButtonInvalid = () => {
+    return !presenter.isSubmitButtonValid(alias, password);
   };
 
-  const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
-      doLogin();
+  const loginOnEnter = async (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key == "Enter") {
+      await presenter.loginOnEnter(
+        event,
+        alias,
+        password,
+        props.originalUrl,
+        rememberMe
+      );
     }
   };
 
   const doLogin = async () => {
-    try {
-      setIsLoading(true);
-
-      // TODO Kaiden
-      const [user, authToken] = await login(alias, password);
-
-      updateUserInfo(user, user, authToken, rememberMe);
-
-      if (!!props.originalUrl) {
-        navigate(props.originalUrl);
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    await presenter.login(props.originalUrl, alias, password, rememberMe);
   };
 
   const inputFieldGenerator = () => {
@@ -91,7 +79,7 @@ const Login = (props: Props) => {
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={checkSubmitButtonStatus}
+      submitButtonDisabled={isSubmitButtonInvalid}
       isLoading={isLoading}
       submit={doLogin}
     />

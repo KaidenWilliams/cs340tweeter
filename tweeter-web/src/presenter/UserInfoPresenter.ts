@@ -2,6 +2,7 @@ import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
 export interface UserInfoView {
+  setLoading: (isLoading: boolean) => void;
   setFollower: (isFollowing: boolean) => void;
   setCountFollowee: (count: number) => void;
   setCountFollower: (count: number) => void;
@@ -73,6 +74,7 @@ export class userInfoPresenter {
     displayedUser: User
   ): Promise<void> {
     try {
+      this._view.setLoading(true);
       this._view.displayInfoStatement(`Following ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this._userService.follow(
@@ -89,6 +91,7 @@ export class userInfoPresenter {
       );
     } finally {
       this._view.clearInfoMessage();
+      this._view.setLoading(false);
     }
   }
 
@@ -97,6 +100,7 @@ export class userInfoPresenter {
     displayedUser: User
   ): Promise<void> {
     try {
+      this._view.setLoading(true);
       this._view.displayInfoStatement(
         `Unfollowing ${displayedUser!.name}...`,
         0
@@ -116,6 +120,7 @@ export class userInfoPresenter {
       );
     } finally {
       this._view.clearInfoMessage();
+      this._view.setLoading(false);
     }
   }
 }

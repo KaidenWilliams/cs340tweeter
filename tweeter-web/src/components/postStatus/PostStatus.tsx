@@ -17,6 +17,7 @@ const PostStatus = () => {
 
   // Has an object View, the page is a view. Gives Presenter methods / callbacks that it can call
   const view: PostStatusView = {
+    setLoading: setIsLoading,
     changePost: setPost,
     displayInfoStatement: displayInfoMessage,
     displayErrorStatement: displayErrorMessage,
@@ -28,9 +29,7 @@ const PostStatus = () => {
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault();
-    setIsLoading(true);
     await presenter.postStatus(post, currentUser, authToken!);
-    setIsLoading(false);
   };
 
   const clearPost = (event: React.MouseEvent) => {
@@ -39,7 +38,7 @@ const PostStatus = () => {
   };
 
   const checkButtonStatus: () => boolean = () => {
-    return !post.trim() || !authToken || !currentUser;
+    return presenter.checkButtonStatus(post, currentUser, authToken);
   };
 
   return (
