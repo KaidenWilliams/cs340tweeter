@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
 export interface AppNavbarView {
