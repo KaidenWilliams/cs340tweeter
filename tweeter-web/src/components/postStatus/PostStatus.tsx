@@ -37,8 +37,8 @@ const PostStatus = () => {
     setPost("");
   };
 
-  const checkButtonStatus: () => boolean = () => {
-    return presenter.checkButtonStatus(post, currentUser, authToken);
+  const isButtonValid = () => {
+    return !!post.trim() && !!authToken && !!currentUser;
   };
 
   return (
@@ -61,7 +61,7 @@ const PostStatus = () => {
             id="postStatusButton"
             className="btn btn-md btn-primary me-1"
             type="button"
-            disabled={checkButtonStatus()}
+            disabled={!isButtonValid()}
             style={{ width: "8em" }}
             onClick={(event) => submitPost(event)}
           >
@@ -79,7 +79,7 @@ const PostStatus = () => {
             id="clearStatusButton"
             className="btn btn-md btn-secondary"
             type="button"
-            disabled={checkButtonStatus()}
+            disabled={!isButtonValid()}
             onClick={(event) => clearPost(event)}
           >
             Clear

@@ -22,22 +22,6 @@ export class LoginPresenter {
     this._userService = new UserService();
   }
 
-  public isSubmitButtonValid(alias: string, password: string): boolean {
-    return !!alias && !!password;
-  }
-
-  public async loginOnEnter(
-    event: React.KeyboardEvent<HTMLElement>,
-    alias: string,
-    password: string,
-    originalUrl: string | undefined,
-    rememberMe: boolean
-  ) {
-    if (this.isSubmitButtonValid(alias, password)) {
-      await this.login(originalUrl, alias, password, rememberMe);
-    }
-  }
-
   public async login(
     originalUrl: string | undefined,
     alias: string,

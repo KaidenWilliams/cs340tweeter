@@ -1,5 +1,5 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { StatusService } from "../model/service/StatusService";
 
 export interface PostStatusView {
   setLoading: (isLoading: boolean) => void;
@@ -11,11 +11,11 @@ export interface PostStatusView {
 
 export class PostStatusPresenter {
   private _view: PostStatusView;
-  private _userService: UserService;
+  private _statusService: StatusService;
 
   constructor(view: PostStatusView) {
     this._view = view;
-    this._userService = new UserService();
+    this._statusService = new StatusService();
   }
 
   public async postStatus(
@@ -27,7 +27,7 @@ export class PostStatusPresenter {
       this._view.setLoading(true);
       this._view.displayInfoStatement("Posting status...", 0);
       const status = new Status(post, currentUser!, Date.now());
-      await this._userService.postStatus(authToken!, status);
+      await this._statusService.postStatus(authToken!, status);
 
       this._view.changePost("");
       this._view.displayInfoStatement("Status posted!", 2000);
@@ -38,13 +38,5 @@ export class PostStatusPresenter {
     }
     this._view.clearInfoMessage();
     this._view.setLoading(false);
-  }
-
-  public checkButtonStatus(
-    post: string,
-    currentUser: User | null,
-    authToken: AuthToken | null
-  ): boolean {
-    return !post.trim() || !authToken || !currentUser;
   }
 }

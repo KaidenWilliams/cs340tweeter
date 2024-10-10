@@ -6,7 +6,6 @@ export interface UserItemView {
 }
 
 export abstract class UserItemPresenter {
-  // Any Field we are making private and adding getters and setters just because
   private _lastItem: User | null = null;
   private _hasMoreItems: boolean = true;
 

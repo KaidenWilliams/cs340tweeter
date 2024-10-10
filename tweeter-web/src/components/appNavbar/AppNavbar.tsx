@@ -4,11 +4,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  AppNavbarPresenter,
-  AppNavbarView,
-} from "../../presenter/AppNavBarPresenter";
 import { useState } from "react";
+import {
+  AppNavbarView,
+  AppNavbarPresenter,
+} from "../../presenter/AppNavbarPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();

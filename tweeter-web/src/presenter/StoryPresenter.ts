@@ -8,13 +8,10 @@ export class StoryPresenter extends StatusItemPresenter {
   private statusService: StatusService;
 
   constructor(view: StatusItemView) {
-    // Has a reference to the View, which it can call through it's callbacks
     super(view);
-    // Also has an instance of a service that it can call to get data
     this.statusService = new StatusService();
   }
 
-  // loadMoreItems method
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     try {
       const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(

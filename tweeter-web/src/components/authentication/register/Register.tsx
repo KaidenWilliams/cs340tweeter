@@ -38,26 +38,25 @@ const Register = () => {
 
   const [presenter] = useState(new RegisterPresenter(view));
 
-  const isSubmitButtonInvalid = (): boolean => {
-    return !presenter.isSubmitButtonValid(
-      firstName,
-      lastName,
-      alias,
-      password,
-      imageUrl,
-      imageFileExtension
+  const isSubmitButtonValid = (): boolean => {
+    return (
+      !!firstName &&
+      !!lastName &&
+      !!alias &&
+      !!password &&
+      !!imageUrl &&
+      !!imageFileExtension
     );
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter") {
-      presenter.registerOnEnter(
+    if (event.key == "Enter" && isSubmitButtonValid()) {
+      presenter.doRegister(
         firstName,
         lastName,
         alias,
         password,
         imageBytes,
-        imageUrl,
         imageFileExtension,
         rememberMe
       );
@@ -148,7 +147,7 @@ const Register = () => {
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={isSubmitButtonInvalid}
+      submitButtonDisabled={() => !isSubmitButtonValid()}
       isLoading={isLoading}
       submit={doRegister}
     />

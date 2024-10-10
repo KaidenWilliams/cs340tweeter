@@ -31,19 +31,13 @@ const Login = (props: Props) => {
 
   const [presenter] = useState(new LoginPresenter(view));
 
-  const isSubmitButtonInvalid = () => {
-    return !presenter.isSubmitButtonValid(alias, password);
+  const isSubmitButtonValid = () => {
+    return !!alias && !!password;
   };
 
   const loginOnEnter = async (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter") {
-      await presenter.loginOnEnter(
-        event,
-        alias,
-        password,
-        props.originalUrl,
-        rememberMe
-      );
+    if (event.key == "Enter" && isSubmitButtonValid()) {
+      await presenter.login(props.originalUrl, alias, password, rememberMe);
     }
   };
 
@@ -79,7 +73,7 @@ const Login = (props: Props) => {
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={isSubmitButtonInvalid}
+      submitButtonDisabled={() => !isSubmitButtonValid()}
       isLoading={isLoading}
       submit={doLogin}
     />
