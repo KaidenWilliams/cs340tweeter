@@ -31,12 +31,16 @@ const Login = (props: Props) => {
 
   const [presenter] = useState(new LoginPresenter(view));
 
+  const isEnterKey = (event: React.KeyboardEvent<HTMLElement>): boolean => {
+    return event.key == "Enter";
+  };
+
   const isSubmitButtonValid = () => {
     return !!alias && !!password;
   };
 
   const loginOnEnter = async (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && isSubmitButtonValid()) {
+    if (isEnterKey(event) && isSubmitButtonValid()) {
       await presenter.login(props.originalUrl, alias, password, rememberMe);
     }
   };

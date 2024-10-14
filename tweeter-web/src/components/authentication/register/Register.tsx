@@ -38,6 +38,10 @@ const Register = () => {
 
   const [presenter] = useState(new RegisterPresenter(view));
 
+  const isEnterKey = (event: React.KeyboardEvent<HTMLElement>): boolean => {
+    return event.key == "Enter";
+  };
+
   const isSubmitButtonValid = (): boolean => {
     return (
       !!firstName &&
@@ -50,7 +54,7 @@ const Register = () => {
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && isSubmitButtonValid()) {
+    if (isEnterKey(event) && isSubmitButtonValid()) {
       presenter.doRegister(
         firstName,
         lastName,
