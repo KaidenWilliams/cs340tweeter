@@ -1,25 +1,10 @@
-import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
 
-export interface LoginView {
-  setLoading: (isLoading: boolean) => void;
-  navigateToPage: (path: string) => void;
-  updateUser: (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) => void;
-  displayErrorStatement: (message: string) => void;
-}
+export interface LoginView extends AuthView {}
 
-export class LoginPresenter {
-  private _view: LoginView;
-  private _userService: UserService;
-
+export class LoginPresenter extends AuthPresenter<LoginView> {
   constructor(view: LoginView) {
-    this._view = view;
-    this._userService = new UserService();
+    super(view);
   }
 
   public async login(
@@ -28,22 +13,18 @@ export class LoginPresenter {
     password: string,
     rememberMe: boolean
   ) {
-    try {
-      this._view.setLoading(false);
-      const [user, authToken] = await this._userService.login(alias, password);
-      this._view.updateUser(user, user, authToken, rememberMe);
+    const authOperation = async () => {
+      return await this.userService.login(alias, password);
+    };
 
-      if (!!originalUrl) {
-        this._view.navigateToPage(originalUrl);
-      } else {
-        this._view.navigateToPage("/");
-      }
-    } catch (error) {
-      this._view.displayErrorStatement(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      this._view.setLoading(false);
-    }
+    const url = originalUrl ?? "/";
+    const operationDescription = "log user in";
+
+    await this.doAuthFunction(
+      authOperation,
+      url,
+      rememberMe,
+      operationDescription
+    );
   }
 }

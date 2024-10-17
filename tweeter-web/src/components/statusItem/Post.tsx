@@ -2,7 +2,10 @@ import { Status, Type } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { PostPresenter, PostView } from "../../presenter/PostPresenter";
+import {
+  DisplayUserPresenter,
+  DisplayUserView,
+} from "../../presenter/PostPresenter";
 import { useState } from "react";
 
 interface Props {
@@ -13,16 +16,17 @@ const Post = (props: Props) => {
   const { setDisplayedUser, currentUser, authToken } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
-  const view: PostView = {
+  const view: DisplayUserView = {
     setDisplayUser: setDisplayedUser,
     displayErrorStatement: displayErrorMessage,
   };
 
-  const [presenter] = useState(new PostPresenter(view));
+  const [presenter] = useState(new DisplayUserPresenter(view));
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
-    await presenter.getUser(event.target.toString(), currentUser, authToken!);
+    const target = event.target.toString();
+    await presenter.displayUser(target, currentUser, authToken!);
   };
 
   return (

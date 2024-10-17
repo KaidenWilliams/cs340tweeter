@@ -1,33 +1,32 @@
-import { User } from "tweeter-shared";
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
 import {
-  UserItemPresenter,
-  UserItemView,
-} from "../../presenter/UserItemPresenter";
+  PagedItemView,
+  PageItemPresenter,
+} from "../../presenter/PageItemPresenter";
 
-interface Props {
-  constructPresenter: (view: UserItemView) => UserItemPresenter;
+interface Props<T, U> {
+  constructPresenter: (view: PagedItemView<T>) => PageItemPresenter<T, U>;
+  constructItemComponent: (item: T) => JSX.Element;
 }
 
-const UserItemScroller = (props: Props) => {
+const UserItemScroller = <T, U>(props: Props<T, U>) => {
   const { displayErrorMessage } = useToastListener();
-  const [items, setItems] = useState<User[]>([]);
-  const [newItems, setNewItems] = useState<User[]>([]);
+  const [items, setItems] = useState<T[]>([]);
+  const [newItems, setNewItems] = useState<T[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
   const { displayedUser, authToken } = useUserInfo();
 
   // Has an object View, the page is a view. Gives Presenter methods / callbacks that it can call
-  const view: UserItemView = {
-    addItems: (newItems: User[]) => setNewItems(newItems),
+  const view: PagedItemView<T> = {
+    addItems: (newItems: T[]) => setNewItems(newItems),
     displayErrorStatement: displayErrorMessage,
   };
 
   // Makes an instance of a Presenter, which view then has a reference to
-  const [presenter] = useState<UserItemPresenter>(
+  const [presenter] = useState<PageItemPresenter<T, U>>(
     props.constructPresenter(view)
   );
 
@@ -76,7 +75,7 @@ const UserItemScroller = (props: Props) => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem value={item} />
+            {props.constructItemComponent(item)}
           </div>
         ))}
       </InfiniteScroll>

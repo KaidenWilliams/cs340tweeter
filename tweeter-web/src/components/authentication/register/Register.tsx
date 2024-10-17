@@ -27,13 +27,13 @@ const Register = () => {
   const { displayErrorMessage } = useToastListener();
 
   const view: RegisterView = {
-    updateInfoUser: updateUserInfo,
+    updateUser: updateUserInfo,
     setLoading: setIsLoading,
     setBytesForImage: setImageBytes,
     setUrlForImage: setImageUrl,
     setFileExtensionForImage: setImageFileExtension,
     displayErrorStatement: displayErrorMessage,
-    doNavigate: navigate,
+    navigateToPage: navigate,
   };
 
   const [presenter] = useState(new RegisterPresenter(view));

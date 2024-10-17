@@ -1,41 +1,39 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { BasePresenter, BaseView } from "./BasePresenter";
 
-export interface PostView {
+export interface DisplayUserView extends BaseView {
   setDisplayUser: (user: User) => void;
-  displayErrorStatement: (message: string) => void;
 }
 
-export class PostPresenter {
-  private _view: PostView;
+export class DisplayUserPresenter extends BasePresenter<DisplayUserView> {
   private _userService: UserService;
 
-  constructor(view: PostView) {
-    this._view = view;
+  constructor(view: DisplayUserView) {
+    super(view);
     this._userService = new UserService();
   }
 
-  public async getUser(
-    aliasToExtract: string,
+  public async displayUser(
+    target: string,
     currentUser: User | null,
     authToken: AuthToken
   ) {
-    try {
-      const alias = this.extractAlias(aliasToExtract);
-      const user = await this._userService.getUser(authToken!, alias);
+    const operation = async () => {
+      const alias = this.extractAlias(target);
+      const user = await this._userService.getUser(authToken, alias);
 
       if (!!user) {
         if (currentUser!.equals(user)) {
-          this._view.setDisplayUser(currentUser!);
+          this.view.setDisplayUser(currentUser!);
         } else {
-          this._view.setDisplayUser(user);
+          this.view.setDisplayUser(user);
         }
       }
-    } catch (error) {
-      this._view.displayErrorStatement(
-        `Failed to get user because of exception: ${error}`
-      );
-    }
+    };
+
+    const operationDescription = "get user";
+    await this.doFailureReportingOperation(operation, operationDescription);
   }
 
   private extractAlias(value: string): string {
