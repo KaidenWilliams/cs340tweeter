@@ -12,7 +12,7 @@ interface Props<T, U> {
   constructItemComponent: (item: T) => JSX.Element;
 }
 
-const UserItemScroller = <T, U>(props: Props<T, U>) => {
+const ItemScroller = <T, U>(props: Props<T, U>) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<T[]>([]);
   const [newItems, setNewItems] = useState<T[]>([]);
@@ -26,9 +26,7 @@ const UserItemScroller = <T, U>(props: Props<T, U>) => {
   };
 
   // Makes an instance of a Presenter, which view then has a reference to
-  const [presenter] = useState<PageItemPresenter<T, U>>(
-    props.constructPresenter(view)
-  );
+  const [presenter] = useState(props.constructPresenter(view));
 
   const reset = async () => {
     setItems([]);
@@ -83,4 +81,4 @@ const UserItemScroller = <T, U>(props: Props<T, U>) => {
   );
 };
 
-export default UserItemScroller;
+export default ItemScroller;
