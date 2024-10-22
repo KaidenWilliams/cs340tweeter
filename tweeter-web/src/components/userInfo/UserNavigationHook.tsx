@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   DisplayUserPresenter,
   DisplayUserView,
@@ -15,8 +16,7 @@ const useUserNavigation = () => {
     displayErrorStatement: displayErrorMessage,
   };
 
-  // Can't use UseState but I think it is fine
-  const presenter = new DisplayUserPresenter(view);
+  const [presenter] = useState(new DisplayUserPresenter(view));
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
