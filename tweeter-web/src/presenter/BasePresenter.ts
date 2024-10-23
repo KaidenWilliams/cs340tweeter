@@ -6,13 +6,6 @@ export interface MessageView extends BaseView {
   displayInfoStatement: (message: string, duration: number) => void;
 }
 
-// TODO make different types of Views, Presenters here
-
-// Just make as much code as possible go bye bye
-
-// Login Presenter + Register Presenter, lot of commonality / common structure
-// They want you to use the Template Method
-
 export class BasePresenter<T extends BaseView> {
   private _view: T;
 
@@ -32,7 +25,9 @@ export class BasePresenter<T extends BaseView> {
       await operation();
     } catch (error) {
       this.view.displayErrorStatement(
-        `Failed to ${operationDescription} because of exception: ${error}`
+        `Failed to ${operationDescription} because of exception: ${
+          (error as Error).message
+        }`
       );
     }
   }
