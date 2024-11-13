@@ -38,14 +38,7 @@ export class Status {
     }
 
     if (startIndex < post.length) {
-      segments.push(
-        new PostSegment(
-          post.substring(startIndex),
-          startIndex,
-          post.length,
-          Type.text
-        )
-      );
+      segments.push(new PostSegment(post.substring(startIndex), startIndex, post.length, Type.text));
     }
 
     return segments;
@@ -77,9 +70,7 @@ export class Status {
 
       if (startIndex > -1) {
         // Push the url
-        references.push(
-          new PostSegment(url, startIndex, startIndex + url.length, Type.url)
-        );
+        references.push(new PostSegment(url, startIndex, startIndex + url.length, Type.url));
 
         // Move start and previous start past the url
         startIndex = startIndex + url.length;
@@ -149,14 +140,7 @@ export class Status {
 
       if (startIndex > -1) {
         // Push the alias
-        references.push(
-          new PostSegment(
-            mention,
-            startIndex,
-            startIndex + mention.length,
-            Type.alias
-          )
-        );
+        references.push(new PostSegment(mention, startIndex, startIndex + mention.length, Type.alias));
 
         // Move start and previous start past the mention
         startIndex = startIndex + mention.length;
@@ -190,9 +174,7 @@ export class Status {
     let match;
     while ((match = regex.exec(post)) !== null) {
       const matchIndex = match.index;
-      newlines.push(
-        new PostSegment("\n", matchIndex, matchIndex + 1, Type.newline)
-      );
+      newlines.push(new PostSegment("\n", matchIndex, matchIndex + 1, Type.newline));
     }
 
     return newlines;
@@ -236,11 +218,7 @@ export class Status {
   }
 
   public equals(other: Status): boolean {
-    return (
-      this._user.equals(other.user) &&
-      this._timestamp === other._timestamp &&
-      this._post === other.post
-    );
+    return this._user.equals(other.user) && this._timestamp === other._timestamp && this._post === other.post;
   }
 
   public static fromJson(json: string | null | undefined): Status | null {

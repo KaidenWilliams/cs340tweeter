@@ -6,10 +6,6 @@
 // so don't need to distinguish the interface vs the concrete implementation naming wise
 
 import { UserDto } from "../../dto/UserDto";
+import { PagedItemRequest } from "./PagedItemRequest";
 
-export interface PagedUserItemRequest {
-  readonly token: string;
-  readonly userAlias: string;
-  readonly pageSize: number;
-  readonly lastItem: UserDto | null;
-}
+export interface PagedUserItemRequest extends PagedItemRequest<UserDto> {}
