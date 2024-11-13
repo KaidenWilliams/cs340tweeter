@@ -6,6 +6,8 @@ export const handler = async (request: LoginRequest): Promise<SignInResponse> =>
   const [foundUser, authToken] = await userService.login(request.alias, request.password);
 
   return {
+    success: true,
+    message: null,
     user: foundUser,
     token: authToken,
   };

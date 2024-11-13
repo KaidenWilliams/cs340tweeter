@@ -6,6 +6,8 @@ export const handler = async (request: GetUserRequest): Promise<GetUserResponse>
   const foundUser = await userService.getUser(request.token, request.alias);
 
   return {
+    success: true,
+    message: null,
     user: foundUser,
   };
 };

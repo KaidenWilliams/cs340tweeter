@@ -13,6 +13,8 @@ export const handler = async (request: RegisterRequest): Promise<SignInResponse>
   );
 
   return {
+    success: true,
+    message: null,
     user: foundUser,
     token: authToken,
   };
