@@ -1,12 +1,20 @@
 import {
+  AuthToken,
   ChangeFollowStateRequest,
   ChangeFollowStateResponse,
   GetCountRequest,
   GetCountResponse,
   GetIsFollowerRequest,
   GetIsFollowerResponse,
+  GetUserRequest,
+  GetUserResponse,
+  LoginRequest,
+  LogoutRequest,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  RegisterRequest,
+  SignInResponse,
+  TweeterResponse,
   User,
   UserMapper,
 } from "tweeter-shared";
@@ -23,13 +31,13 @@ export class ServerFacade {
     isFollowing: "/follower/isfollowing",
     follow: "/follower/follow",
     unfollow: "/follower/unfollow",
-    feedList: "/feed/list",
-    storyList: "/story/list",
-    statusUpload: "/status/upload",
     userGrab: "/user/grab",
     authRegister: "/auth/register",
     authLogin: "/auth/login",
     authLogout: "/auth/logout",
+    feedList: "/feed/list",
+    storyList: "/story/list",
+    statusUpload: "/status/upload",
   };
 
   private clientCommunicator: ClientCommunicator;
@@ -160,4 +168,58 @@ export class ServerFacade {
   }
 
   // USERSERVICE METHODS
+
+  public async grabUser(request: GetUserRequest): Promise<User | null> {
+    const response = await this.clientCommunicator.doPost<GetUserRequest, GetUserResponse>(
+      request,
+      this.endpoints.userGrab
+    );
+
+    if (response.success) {
+      return response.user ? UserMapper.fromDto(response.user) : null;
+    } else {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  public async doRegister(request: RegisterRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<RegisterRequest, SignInResponse>(
+      request,
+      this.endpoints.authRegister
+    );
+
+    if (response.success) {
+      const user = UserMapper.fromDto(response.user);
+      const authToken = new AuthToken(response.token, Date.now());
+      return [user!, authToken];
+    } else {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  public async doLogin(request: LoginRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<LoginRequest, SignInResponse>(
+      request,
+      this.endpoints.authLogin
+    );
+
+    if (response.success) {
+      const user = UserMapper.fromDto(response.user);
+      const authToken = new AuthToken(response.token, Date.now());
+      return [user!, authToken];
+    } else {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  public async doLogout(request: LogoutRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<LogoutRequest, TweeterResponse>(
+      request,
+      this.endpoints.authLogout
+    );
+
+    if (!response.success) {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
 }
