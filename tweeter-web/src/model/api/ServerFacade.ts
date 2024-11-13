@@ -10,14 +10,20 @@ import {
   GetUserResponse,
   LoginRequest,
   LogoutRequest,
+  PagedStatusItemRequest,
+  PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
   RegisterRequest,
   SignInResponse,
+  Status,
+  StatusMapper,
   TweeterResponse,
   User,
   UserMapper,
 } from "tweeter-shared";
+
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
@@ -168,7 +174,6 @@ export class ServerFacade {
   }
 
   // USERSERVICE METHODS
-
   public async grabUser(request: GetUserRequest): Promise<User | null> {
     const response = await this.clientCommunicator.doPost<GetUserRequest, GetUserResponse>(
       request,
@@ -216,6 +221,61 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<LogoutRequest, TweeterResponse>(
       request,
       this.endpoints.authLogout
+    );
+
+    if (!response.success) {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  // STATUSSERVICE METHODS
+
+  public async getFeedItems(request: PagedStatusItemRequest): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<PagedStatusItemRequest, PagedStatusItemResponse>(
+      request,
+      this.endpoints.feedList
+    );
+
+    if (response.success) {
+      const items: Status[] | null = response.items
+        ? response.items.map((dto) => StatusMapper.fromDto(dto)!)
+        : null;
+
+      if (items == null) {
+        throw new Error(`No feed items found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  public async getStoryItems(request: PagedStatusItemRequest): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<PagedStatusItemRequest, PagedStatusItemResponse>(
+      request,
+      this.endpoints.storyList
+    );
+
+    if (response.success) {
+      const items: Status[] | null = response.items
+        ? response.items.map((dto) => StatusMapper.fromDto(dto)!)
+        : null;
+
+      if (items == null) {
+        throw new Error(`No feed items found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
+      throw new Error(response.message ?? "An unspecified error occurred");
+    }
+  }
+
+  public async createStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<PostStatusRequest, TweeterResponse>(
+      request,
+      this.endpoints.statusUpload
     );
 
     if (!response.success) {
