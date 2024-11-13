@@ -56,4 +56,19 @@ export class ServerFacade {
       throw new Error(response.message ?? "An unspecified error occurred");
     }
   }
+
+  // 1. /followee/list
+  // 2. /follower/list
+  // 3. /followee/count
+  // 4. /follower/count
+  // 5. /follower/isfollowing
+  // 6. /follower/follow
+  // 7. /follower/unfollow
+  // 8. /feed/list
+  // 9. /story/list
+  // 10. /status/upload
+  // 11. /user/grab
+  // 12. /auth/register
+  // 13. /auth/login
+  // 14. /auth/logout
 }
