@@ -9,6 +9,7 @@ export { AuthToken } from "./model/domain/AuthToken";
 export { PostSegment, Type } from "./model/domain/PostSegment";
 
 // REQUESTS
+export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequest";
 export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItemRequest";
 export type { ChangeFollowStateRequest } from "./model/net/request/ChangeFollowStateRequest";
@@ -21,6 +22,7 @@ export type { RegisterRequest } from "./model/net/request/RegisterRequest";
 export type { LogoutRequest } from "./model/net/request/LogoutRequest";
 
 // RESPONSES
+export type { TweeterResponse } from "./model/net/response/TweeterResponse";
 export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemResponse";
 export type { PagedStatusItemResponse } from "./model/net/response/PagedStatusItemResponse";
 export type { ChangeFollowStateResponse } from "./model/net/response/ChangeFollowStateResponse";
