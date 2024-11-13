@@ -19,21 +19,13 @@ export class userInfoPresenter extends BasePresenter<UserInfoView> {
     this._followService = new FollowService();
   }
 
-  public async setIsFollowerStatus(
-    authToken: AuthToken,
-    currentUser: User,
-    displayedUser: User
-  ) {
+  public async setIsFollowerStatus(authToken: AuthToken, currentUser: User, displayedUser: User) {
     const operation = async () => {
       if (currentUser === displayedUser) {
         this.view.setFollower(false);
       } else {
         this.view.setFollower(
-          await this._followService.getIsFollowerStatus(
-            authToken!,
-            currentUser!,
-            displayedUser!
-          )
+          await this._followService.getIsFollower(authToken!, currentUser!, displayedUser!)
         );
       }
     };
@@ -44,9 +36,7 @@ export class userInfoPresenter extends BasePresenter<UserInfoView> {
 
   public async setNumbFollowees(authToken: AuthToken, displayedUser: User) {
     const operation = async () => {
-      this.view.setCountFollowee(
-        await this._followService.getFolloweeCount(authToken, displayedUser)
-      );
+      this.view.setCountFollowee(await this._followService.getFolloweeCount(authToken, displayedUser));
     };
 
     const operationDescription = "get followees count";
@@ -55,45 +45,29 @@ export class userInfoPresenter extends BasePresenter<UserInfoView> {
 
   public async setNumbFollowers(authToken: AuthToken, displayedUser: User) {
     const operation = async () => {
-      this.view.setCountFollower(
-        await this._followService.getFollowerCount(authToken, displayedUser)
-      );
+      this.view.setCountFollower(await this._followService.getFollowerCount(authToken, displayedUser));
     };
 
     const operationDescription = "get followers count";
     await this.doFailureReportingOperation(operation, operationDescription);
   }
 
-  public async followDisplayedUser(
-    authToken: AuthToken,
-    displayedUser: User
-  ): Promise<void> {
+  public async followDisplayedUser(authToken: AuthToken, displayedUser: User): Promise<void> {
     const followOperation = async () => {
       return await this._followService.follow(authToken, displayedUser);
     };
 
     const isCurrentlyFollowing = false;
-    await this.changeFollowStatus(
-      followOperation,
-      displayedUser,
-      isCurrentlyFollowing
-    );
+    await this.changeFollowStatus(followOperation, displayedUser, isCurrentlyFollowing);
   }
 
-  public async unfollowDisplayedUser(
-    authToken: AuthToken,
-    displayedUser: User
-  ): Promise<void> {
+  public async unfollowDisplayedUser(authToken: AuthToken, displayedUser: User): Promise<void> {
     const followOperation = async () => {
       return await this._followService.unfollow(authToken!, displayedUser!);
     };
 
     const isCurrentlyFollowing = true;
-    await this.changeFollowStatus(
-      followOperation,
-      displayedUser,
-      isCurrentlyFollowing
-    );
+    await this.changeFollowStatus(followOperation, displayedUser, isCurrentlyFollowing);
   }
 
   private async changeFollowStatus(
@@ -106,10 +80,7 @@ export class userInfoPresenter extends BasePresenter<UserInfoView> {
 
     const operation = async () => {
       this.view.setLoading(true);
-      this.view.displayInfoStatement(
-        `${displayText} ${displayedUser!.name}...`,
-        0
-      );
+      this.view.displayInfoStatement(`${displayText} ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await followOperation();
 

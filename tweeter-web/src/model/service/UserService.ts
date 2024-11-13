@@ -1,14 +1,21 @@
 // TODO KAIDEN need to implement 10 functions here
 
 import { Buffer } from "buffer";
-import { AuthToken, FakeData, Status, User } from "tweeter-shared";
+import { AuthToken, FakeData, User } from "tweeter-shared";
+import { ServerFacade } from "../api/ServerFacade";
 
 export class UserService {
-  //2
-  public async getUser(
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> {
+  private serverFacade: ServerFacade;
+
+  constructor() {
+    this.serverFacade = this.getServerFacade();
+  }
+
+  private getServerFacade() {
+    return new ServerFacade();
+  }
+
+  public async getUser(authToken: AuthToken, alias: string): Promise<User | null> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.findUserByAlias(alias);
   }
@@ -22,8 +29,7 @@ export class UserService {
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
     // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
+    const imageStringBase64: string = Buffer.from(userImageBytes).toString("base64");
 
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
@@ -33,10 +39,7 @@ export class UserService {
     return [user, FakeData.instance.authToken];
   }
 
-  public async login(
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> {
+  public async login(alias: string, password: string): Promise<[User, AuthToken]> {
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
     if (user === null) {

@@ -1,19 +1,43 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, FakeData, User, UserMapper } from "tweeter-shared";
+import { ServerFacade } from "../api/ServerFacade";
 
 export class FollowService {
-  public async getIsFollowerStatus(authToken: AuthToken, user: User, selectedUser: User): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+  private serverFacade: ServerFacade;
+
+  constructor() {
+    this.serverFacade = this.getServerFacade();
   }
 
-  public async getFolloweeCount(authToken: AuthToken, user: User): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+  private getServerFacade() {
+    return new ServerFacade();
+  }
+
+  public async getIsFollower(authToken: AuthToken, user: User, selectedUser: User): Promise<boolean> {
+    const request = {
+      token: authToken.token,
+      currentUser: UserMapper.toDto(user),
+      selectedUser: UserMapper.toDto(selectedUser),
+    };
+
+    return await this.serverFacade.getIsFollowing(request);
   }
 
   public async getFollowerCount(authToken: AuthToken, user: User): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    const request = {
+      token: authToken.token,
+      user: UserMapper.toDto(user),
+    };
+
+    return this.serverFacade.getCountFollower(request);
+  }
+
+  public async getFolloweeCount(authToken: AuthToken, user: User): Promise<number> {
+    const request = {
+      token: authToken.token,
+      user: UserMapper.toDto(user),
+    };
+
+    return this.serverFacade.getCountFollowee(request);
   }
 
   public async loadMoreFollowers(
@@ -22,8 +46,15 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const request = {
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem,
+    };
+
+    const result = this.serverFacade.getMoreFollowers(request);
+    return result;
   }
 
   public async loadMoreFollowees(
@@ -32,37 +63,38 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const request = {
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem,
+    };
+
+    const result = this.serverFacade.getMoreFollowees(request);
+    return result;
   }
 
   public async follow(
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const request = {
+      token: authToken.token,
+      user: UserMapper.toDto(userToFollow),
+    };
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
-
-    return [followerCount, followeeCount];
+    return await this.serverFacade.doFollow(request);
   }
 
   public async unfollow(
     authToken: AuthToken,
-    userToUnfollow: User
+    userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    const request = {
+      token: authToken.token,
+      user: UserMapper.toDto(userToFollow),
+    };
 
-    // TODO: Call the server
-
-    const followerCount = await this.getFollowerCount(authToken, userToUnfollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToUnfollow);
-
-    return [followerCount, followeeCount];
+    return await this.serverFacade.doUnfollow(request);
   }
 }
