@@ -36,8 +36,7 @@ describe("Login Component", () => {
   });
 
   it("should render the post status and clear button as enabled when the text field has text", async () => {
-    const { postStatusButton, clearButton, statusTextField, user } =
-      renderPostStatusAndGetElements();
+    const { postStatusButton, clearButton, statusTextField, user } = renderPostStatusAndGetElements();
 
     await user.type(statusTextField, "a");
     expect(statusTextField).toHaveValue("a");
@@ -47,8 +46,7 @@ describe("Login Component", () => {
   });
 
   it("should render the post status and clear button as disabled when the text field is cleared", async () => {
-    const { postStatusButton, clearButton, statusTextField, user } =
-      renderPostStatusAndGetElements();
+    const { postStatusButton, clearButton, statusTextField, user } = renderPostStatusAndGetElements();
 
     await user.type(statusTextField, "a");
     expect(statusTextField).toHaveValue("a");
@@ -65,8 +63,7 @@ describe("Login Component", () => {
   });
 
   it("should call the presenter's postStatus method with correct parameters", async () => {
-    const { postStatusButton, statusTextField, user } =
-      renderPostStatusAndGetElements();
+    const { postStatusButton, statusTextField, user } = renderPostStatusAndGetElements();
 
     const mockPostStatus = jest
       .spyOn(PostStatusPresenter.prototype, "postStatus")
@@ -78,11 +75,7 @@ describe("Login Component", () => {
     expect(postStatusButton).not.toBeDisabled();
     await user.click(postStatusButton);
 
-    expect(mockPostStatus).toHaveBeenCalledWith(
-      post,
-      mockUserInstance,
-      mockAuthTokenInstance
-    );
+    expect(mockPostStatus).toHaveBeenCalledWith(post, mockUserInstance, mockAuthTokenInstance);
 
     mockPostStatus.mockRestore();
   });

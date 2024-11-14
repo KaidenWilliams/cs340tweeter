@@ -1,8 +1,6 @@
+import "isomorphic-fetch";
 import { instance, mock, verify } from "ts-mockito";
-import {
-  PostStatusPresenter,
-  PostStatusView,
-} from "../../src/presenter/PostStatusPresenter";
+import { PostStatusPresenter, PostStatusView } from "../../src/presenter/PostStatusPresenter";
 import { AuthToken, Status, User } from "tweeter-shared";
 import { StatusService } from "../../src/model/service/StatusService";
 
@@ -25,17 +23,12 @@ describe("PostStatusPresenter", () => {
 
   it("tells the view to display a posting status message", async () => {
     await postStatusPresenter.postStatus(post, currentUser, authToken);
-    verify(
-      mockPostStatusView.displayInfoStatement("Posting status...", 0)
-    ).once();
+    verify(mockPostStatusView.displayInfoStatement("Posting status...", 0)).once();
   });
 
   it("calls postStatus on the status Service with a correct authToken and status", async () => {
     const mockLogout = jest
-      .spyOn(
-        StatusService.prototype,
-        StatusService.prototype.postStatus.name as keyof StatusService
-      )
+      .spyOn(StatusService.prototype, StatusService.prototype.postStatus.name as keyof StatusService)
       .mockResolvedValue(Promise.resolve());
 
     const mockDate = new Date("2024-01-01T00:00:00Z");
@@ -52,19 +45,14 @@ describe("PostStatusPresenter", () => {
 
   it("on succesful posting of status, tells the view to clear the last info message, post, and display a message", async () => {
     const mockLogout = jest
-      .spyOn(
-        StatusService.prototype,
-        StatusService.prototype.postStatus.name as keyof StatusService
-      )
+      .spyOn(StatusService.prototype, StatusService.prototype.postStatus.name as keyof StatusService)
       .mockResolvedValue(Promise.resolve());
 
     await postStatusPresenter.postStatus(post, currentUser, authToken);
     mockLogout.mockRestore();
 
     verify(mockPostStatusView.changePost("")).once();
-    verify(
-      mockPostStatusView.displayInfoStatement("Status posted!", 2000)
-    ).once();
+    verify(mockPostStatusView.displayInfoStatement("Status posted!", 2000)).once();
     verify(mockPostStatusView.clearInfoMessage()).once();
   });
 
@@ -72,19 +60,14 @@ describe("PostStatusPresenter", () => {
     const errorMessage = "Bad things happened";
 
     const mockLogout = jest
-      .spyOn(
-        StatusService.prototype,
-        StatusService.prototype.postStatus.name as keyof StatusService
-      )
+      .spyOn(StatusService.prototype, StatusService.prototype.postStatus.name as keyof StatusService)
       .mockRejectedValue(new Error(errorMessage));
 
     await postStatusPresenter.postStatus(post, currentUser, authToken);
     mockLogout.mockRestore();
 
     verify(mockPostStatusView.changePost("")).never();
-    verify(
-      mockPostStatusView.displayInfoStatement("Status posted!", 2000)
-    ).never();
+    verify(mockPostStatusView.displayInfoStatement("Status posted!", 2000)).never();
 
     verify(mockPostStatusView.clearInfoMessage()).once();
     verify(

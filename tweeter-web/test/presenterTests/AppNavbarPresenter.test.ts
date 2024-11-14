@@ -1,8 +1,6 @@
-import { anyString, instance, mock, verify } from "ts-mockito";
-import {
-  AppNavbarPresenter,
-  AppNavbarView,
-} from "../../src/presenter/AppNavbarPresenter";
+import "isomorphic-fetch";
+import { instance, mock, verify } from "ts-mockito";
+import { AppNavbarPresenter, AppNavbarView } from "../../src/presenter/AppNavbarPresenter";
 import { AuthToken } from "tweeter-shared";
 import { UserService } from "../../src/model/service/UserService";
 
@@ -28,10 +26,7 @@ describe("AppNavbarPresenter", () => {
 
   it("calls logout on the User Service with a correct authToken", async () => {
     const mockLogout = jest
-      .spyOn(
-        UserService.prototype,
-        UserService.prototype.logout.name as keyof UserService
-      )
+      .spyOn(UserService.prototype, UserService.prototype.logout.name as keyof UserService)
       .mockResolvedValue(Promise.resolve());
 
     await appNavbarPresenter.logOut(authToken);
@@ -42,10 +37,7 @@ describe("AppNavbarPresenter", () => {
 
   it("on succesful logout, tells the view to clear the last info message and user info", async () => {
     const mockLogout = jest
-      .spyOn(
-        UserService.prototype,
-        UserService.prototype.logout.name as keyof UserService
-      )
+      .spyOn(UserService.prototype, UserService.prototype.logout.name as keyof UserService)
       .mockResolvedValue(Promise.resolve());
 
     await appNavbarPresenter.logOut(authToken);
@@ -59,10 +51,7 @@ describe("AppNavbarPresenter", () => {
     const errorMessage = "Bad things happened";
 
     const mockLogout = jest
-      .spyOn(
-        UserService.prototype,
-        UserService.prototype.logout.name as keyof UserService
-      )
+      .spyOn(UserService.prototype, UserService.prototype.logout.name as keyof UserService)
       .mockRejectedValue(new Error(errorMessage));
 
     await appNavbarPresenter.logOut(authToken);
@@ -74,9 +63,7 @@ describe("AppNavbarPresenter", () => {
     // I think this is bad, this test shouldn't check what the message actually is, that can change so easily and will brick test
     // Good tests like good any other type of code, resistant to change, isolated
     verify(
-      mockAppNavbarView.displayErrorStatement(
-        `Failed to log out user because of exception: ${errorMessage}`
-      )
+      mockAppNavbarView.displayErrorStatement(`Failed to log out user because of exception: ${errorMessage}`)
     ).once();
   });
 });
