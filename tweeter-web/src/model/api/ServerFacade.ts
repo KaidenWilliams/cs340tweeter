@@ -210,32 +210,8 @@ export class ServerFacade {
     );
 
     if (response.success) {
-      console.log("test");
-
-      const testUserDto: UserDto = {
-        firstName: "Allen",
-        lastName: "Anderson",
-        alias: "@allen",
-        imageUrl: "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png",
-      };
-
-      console.log(testUserDto);
-      const testUser = UserMapper.fromDto(testUserDto);
-      console.log(testUser);
-      console.log("tested");
-
-      console.log(response.user);
-      const anotherTestDTO: UserDto = response.user;
-
-      const user = UserMapper.fromDto(anotherTestDTO as UserDto);
-      console.log(user);
-
+      const user = UserMapper.fromDto(response.user);
       const authToken = new AuthToken(response.token, Date.now());
-      console.log(authToken);
-
-      console.log(JSON.stringify(testUserDto));
-      console.log(JSON.stringify(anotherTestDTO));
-
       return [user!, authToken];
     } else {
       throw new Error(response.message ?? "An unspecified error occurred");

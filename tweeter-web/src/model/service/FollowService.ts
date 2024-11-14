@@ -28,7 +28,7 @@ export class FollowService {
       user: UserMapper.toDto(user),
     };
 
-    return this.serverFacade.getCountFollower(request);
+    return await this.serverFacade.getCountFollower(request);
   }
 
   public async getFolloweeCount(authToken: AuthToken, user: User): Promise<number> {
@@ -37,7 +37,7 @@ export class FollowService {
       user: UserMapper.toDto(user),
     };
 
-    return this.serverFacade.getCountFollowee(request);
+    return await this.serverFacade.getCountFollowee(request);
   }
 
   public async loadMoreFollowers(
@@ -50,11 +50,10 @@ export class FollowService {
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
-      lastItem: lastItem,
+      lastItem: lastItem ? UserMapper.toDto(lastItem) : null,
     };
 
-    const result = this.serverFacade.getMoreFollowers(request);
-    return result;
+    return await this.serverFacade.getMoreFollowers(request);
   }
 
   public async loadMoreFollowees(
@@ -67,11 +66,10 @@ export class FollowService {
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
-      lastItem: lastItem,
+      lastItem: lastItem ? UserMapper.toDto(lastItem) : null,
     };
 
-    const result = this.serverFacade.getMoreFollowees(request);
-    return result;
+    return await this.serverFacade.getMoreFollowees(request);
   }
 
   public async follow(
