@@ -1,12 +1,13 @@
 // TODO KAIDEN need to implement 10 functions here
 
 import { Buffer } from "buffer";
-import { FakeData, UserDto } from "tweeter-shared";
+import { FakeData, UserDto, UserMapper } from "tweeter-shared";
 
 export class UserService {
   public async getUser(authToken: string, alias: string): Promise<UserDto | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    const user = FakeData.instance.findUserByAlias(alias);
+    return user == null ? null : UserMapper.toDto(user);
   }
 
   public async register(
@@ -14,18 +15,15 @@ export class UserService {
     lastName: string,
     alias: string,
     password: string,
-    userImageBytes: Uint8Array,
+    userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, string]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string = Buffer.from(userImageBytes).toString("base64");
-
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
     if (user === null) {
       throw new Error("Invalid registration");
     }
-    return [user, this.newAuthToken()];
+    return [UserMapper.toDto(user), this.newAuthToken()];
   }
 
   public async login(alias: string, password: string): Promise<[UserDto, string]> {
@@ -34,7 +32,7 @@ export class UserService {
     if (user === null) {
       throw new Error("Invalid alias or password");
     }
-    return [user, this.newAuthToken()];
+    return [UserMapper.toDto(user), this.newAuthToken()];
   }
 
   public async logout(authToken: string): Promise<void> {

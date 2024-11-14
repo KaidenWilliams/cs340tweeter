@@ -1,8 +1,6 @@
-// TODO KAIDEN need to implement 10 functions here
-
-import { Buffer } from "buffer";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { ServerFacade } from "../api/ServerFacade";
+import { Buffer } from "buffer";
 
 export class UserService {
   private serverFacade: ServerFacade;
@@ -37,7 +35,7 @@ export class UserService {
       lastName,
       alias,
       password,
-      userImageBytes: userImageBytes,
+      userImageBytes: Buffer.from(userImageBytes).toString("base64"),
       imageFileExtension,
     };
 
@@ -58,6 +56,6 @@ export class UserService {
       token: authToken.token,
     };
 
-    await this.serverFacade.doLogout(request);
+    return await this.serverFacade.doLogout(request);
   }
 }
