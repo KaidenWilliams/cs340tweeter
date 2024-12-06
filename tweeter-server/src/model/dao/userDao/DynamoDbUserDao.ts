@@ -6,8 +6,8 @@ import { UserEntity } from "../../entity/User";
 export class DynamoDbUserDao implements UserDao {
   readonly tableName = "user";
 
-  readonly aliasColumn = "token";
-  readonly passwordHashColumn = "passwordHasd";
+  readonly aliasColumn = "alias";
+  readonly passwordHashColumn = "passwordHashed";
   readonly firstNameColumn = "firstName";
   readonly lastNameColumn = "lastName";
   readonly imageUrlColumn = "imageUrl";

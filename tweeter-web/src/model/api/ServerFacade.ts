@@ -21,7 +21,6 @@ import {
   StatusMapper,
   TweeterResponse,
   User,
-  UserDto,
   UserMapper,
 } from "tweeter-shared";
 

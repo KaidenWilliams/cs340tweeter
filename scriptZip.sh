@@ -32,16 +32,17 @@ npm run build
 cd ..
 
 
-# 4. Handle entire node_modules replacement - CAN BE PUT IN IF NEEDED
-# echo "Replacing entire node_modules in nodejs folder..."
+# # 4. Handle entire node_modules replacement - CAN BE PUT IN IF NEEDED
 # # First, remove the old nodejs/node_modules if it exists
-# if [ -d "tweeter-server/nodejs/node_modules" ]; then
-#     rm -rf "tweeter-server/nodejs/node_modules"
-# fi
+# # Then, Copy the entire node_modules directory
 
-# # Copy the entire node_modules directory
-# echo "Copying node_modules from tweeter-server to nodejs folder..."
-# cp -r "tweeter-server/node_modules" "tweeter-server/nodejs/"
+echo "Replacing entire node_modules in nodejs folder..."
+if [ -d "tweeter-server/nodejs/node_modules" ]; then
+    rm -rf "tweeter-server/nodejs/node_modules"
+fi
+
+echo "Copying node_modules from tweeter-server to nodejs folder..."
+cp -r "tweeter-server/node_modules" "tweeter-server/nodejs/"
 
 
 
