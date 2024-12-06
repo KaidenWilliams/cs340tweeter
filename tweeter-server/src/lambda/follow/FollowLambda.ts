@@ -3,7 +3,8 @@ import { FollowService } from "../../model/service/FollowService";
 import { ChangeFollowStateRequest, ChangeFollowStateResponse } from "tweeter-shared";
 
 export const handler = async (request: ChangeFollowStateRequest): Promise<ChangeFollowStateResponse> => {
-  const followService = new FollowService(new DynamoDbDaoFactory());
+  const daoFactory = new DynamoDbDaoFactory();
+  const followService = new FollowService(daoFactory);
 
   const [followerCount, followeeCount] = await followService.follow(request.token, request.user);
 

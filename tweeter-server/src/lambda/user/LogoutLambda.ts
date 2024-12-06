@@ -3,7 +3,8 @@ import { UserService } from "../../model/service/UserService";
 import { DynamoDbDaoFactory } from "../../model/dao/daoFactory/DynamoDbDaoFactory";
 
 export const handler = async (request: LogoutRequest): Promise<TweeterResponse> => {
-  const userService = new UserService(new DynamoDbDaoFactory());
+  const daoFactory = new DynamoDbDaoFactory();
+  const userService = new UserService(daoFactory);
 
   await userService.logout(request.token);
 

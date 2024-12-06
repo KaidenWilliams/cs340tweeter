@@ -1,18 +1,34 @@
-import { Buffer } from "buffer";
-import { FakeData, UserDto, UserMapper } from "tweeter-shared";
+import { UserDto } from "tweeter-shared";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
+import { UserEntity } from "../entity/User";
+import { AuthService } from "./AuthService";
 
 export class UserService {
-  private readonly daoFactory: DaoFactory;
+  private readonly authService;
+
+  private readonly userDao;
+  private readonly photoDao;
 
   constructor(daoFactory: DaoFactory) {
-    this.daoFactory = daoFactory;
+    this.authService = new AuthService(daoFactory);
+    this.userDao = daoFactory.createUserDao();
+    this.photoDao = daoFactory.createPhotoDao();
   }
 
   public async getUser(authToken: string, alias: string): Promise<UserDto | null> {
-    // TODO: Replace with the result of calling server
-    const user = FakeData.instance.findUserByAlias(alias);
-    return user == null ? null : UserMapper.toDto(user);
+    await this.authService.EnsureValidAuthTokenThrowsError(authToken);
+
+    const user = await this.userDao.getUser(alias);
+    if (user == null) return null;
+
+    const userDto: UserDto = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      alias: user.alias,
+      imageUrl: user.imageUrl,
+    };
+
+    return userDto;
   }
 
   public async register(
@@ -23,30 +39,62 @@ export class UserService {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, string]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-    if (user === null) {
-      throw new Error("Invalid registration");
+    // 1. Check if user already exists. If so, throw an error.
+    const userThatAlreadyExists = await this.userDao.getUser(alias);
+    if (userThatAlreadyExists != null) {
+      throw new Error("This user has already registered. Please login instead");
     }
-    return [UserMapper.toDto(user), this.newAuthToken()];
+
+    // 2. Send photo to S3 DAO
+    const fileName = `${alias}.${imageFileExtension}`;
+    const imageUrl = await this.photoDao.putImage(fileName, userImageBytes);
+
+    // 3. Hash Password
+    const hashedPassword = await this.authService.hashPassword(password);
+
+    // 4. Store User in table
+    const newUserEntity = new UserEntity(alias, hashedPassword, firstName, lastName, imageUrl);
+    await this.userDao.createUser(newUserEntity);
+
+    // 5. Make authToken, put in Database
+    const authToken = await this.authService.createAuth();
+
+    // 6. Return a UserDTO
+    const createdUserDto: UserDto = {
+      firstName: firstName,
+      lastName: lastName,
+      alias: alias,
+      imageUrl: imageUrl,
+    };
+
+    return [createdUserDto, authToken];
   }
 
   public async login(alias: string, password: string): Promise<[UserDto, string]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const user = await this.userDao.getUser(alias);
     if (user === null) {
-      throw new Error("Invalid alias or password");
+      throw new Error("Invalid alias");
     }
-    return [UserMapper.toDto(user), this.newAuthToken()];
+
+    const validPassword = await this.authService.doPassWordsMatch(password, user.passwordHash);
+    if (!validPassword) {
+      throw new Error("Invalid Password");
+    }
+
+    const authToken = await this.authService.createAuth();
+
+    const createdUserDto: UserDto = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      alias: user.alias,
+      imageUrl: user.imageUrl,
+    };
+
+    return [createdUserDto, authToken];
   }
 
   public async logout(authToken: string): Promise<void> {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
-  }
-
-  // Returns 10 digit random string
-  private newAuthToken(): string {
-    return Math.random().toString(36).substring(2, 17);
+    await this.authService.EnsureValidAuthTokenThrowsError(authToken);
+    await this.authService.deleteAuth(authToken);
   }
 }

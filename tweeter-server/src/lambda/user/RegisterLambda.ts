@@ -3,9 +3,10 @@ import { UserService } from "../../model/service/UserService";
 import { DynamoDbDaoFactory } from "../../model/dao/daoFactory/DynamoDbDaoFactory";
 
 export const handler = async (request: RegisterRequest): Promise<SignInResponse> => {
-  const userService = new UserService(new DynamoDbDaoFactory());
+  const daoFactory = new DynamoDbDaoFactory();
+  const userService = new UserService(daoFactory);
 
-  const [foundUser, authToken] = await userService.register(
+  const [createdUser, authToken] = await userService.register(
     request.firstName,
     request.lastName,
     request.alias,
@@ -17,7 +18,7 @@ export const handler = async (request: RegisterRequest): Promise<SignInResponse>
   return {
     success: true,
     message: null,
-    user: foundUser,
+    user: createdUser,
     token: authToken,
   };
 };

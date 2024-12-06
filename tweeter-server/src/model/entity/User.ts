@@ -1,9 +1,9 @@
-export class User {
+export class UserEntity {
   constructor(
     public alias: string,
-    public password_hash: string,
-    public first_name: string,
-    public last_name: string,
-    public image_url: string
+    public passwordHash: string,
+    public firstName: string,
+    public lastName: string,
+    public imageUrl: string
   ) {}
 }

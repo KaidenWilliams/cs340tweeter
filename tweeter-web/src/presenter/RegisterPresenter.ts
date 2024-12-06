@@ -1,4 +1,3 @@
-import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { AuthPresenter, AuthView } from "./AuthPresenter";
 
@@ -25,13 +24,9 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
       reader.onload = (event: ProgressEvent<FileReader>) => {
         const imageStringBase64 = event.target?.result as string;
 
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
+        const imageStringBase64BufferContents = imageStringBase64.split("base64,")[1];
 
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64"
-        );
+        const bytes: Uint8Array = Buffer.from(imageStringBase64BufferContents, "base64");
 
         this.view.setBytesForImage(bytes);
       };
@@ -70,11 +65,6 @@ export class RegisterPresenter extends AuthPresenter<RegisterView> {
     const url = "/";
     const operationDescription = "register user";
 
-    await this.doAuthFunction(
-      authOperation,
-      url,
-      rememberMe,
-      operationDescription
-    );
+    await this.doAuthFunction(authOperation, url, rememberMe, operationDescription);
   }
 }

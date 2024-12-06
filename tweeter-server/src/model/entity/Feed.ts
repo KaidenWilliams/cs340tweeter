@@ -1,12 +1,12 @@
 // TODO FIGURE OUT THIS SORT KEY SHENANIGANS LATER
 
-export class Feed {
+export class FeedEntity {
   // followerAlias: person who is FOLLOWING
   // followeeAlias: person who is BEING FOLLOWED
   constructor(
-    public follower_alias: string,
-    public followee_alias: string,
-    public sort_key: string, // combo of ISO timestamp + followee_alias
+    public followerAlias: string,
+    public followeeAlias: string,
+    public sortKey: string, // combo of ISO timestamp + followee_alias
     public timestamp: number,
     public post: string
   ) {}

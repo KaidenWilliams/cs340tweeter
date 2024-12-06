@@ -1,7 +1,7 @@
-export class Auth {
+export class AuthEntity {
   constructor(
     public token: string,
     public timestamp: number,
-    public expires_at: string // ISO date format
+    public expiresAt: string // ISO date format
   ) {}
 }

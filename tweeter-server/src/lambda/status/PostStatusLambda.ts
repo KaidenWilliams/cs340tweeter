@@ -3,7 +3,8 @@ import { StatusService } from "../../model/service/StatusService";
 import { PostStatusRequest, TweeterResponse } from "tweeter-shared";
 
 export const handler = async (request: PostStatusRequest): Promise<TweeterResponse> => {
-  const statusService = new StatusService(new DynamoDbDaoFactory());
+  const daoFactory = new DynamoDbDaoFactory();
+  const statusService = new StatusService(daoFactory);
 
   await statusService.postStatus(request.token, request.newStatus);
 

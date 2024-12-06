@@ -3,7 +3,8 @@ import { FollowService } from "../../model/service/FollowService";
 import { DynamoDbDaoFactory } from "../../model/dao/daoFactory/DynamoDbDaoFactory";
 
 export const handler = async (request: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
-  const followService = new FollowService(new DynamoDbDaoFactory());
+  const daoFactory = new DynamoDbDaoFactory();
+  const followService = new FollowService(daoFactory);
 
   const [items, hasMore] = await followService.loadMoreFollowees(
     request.token,
