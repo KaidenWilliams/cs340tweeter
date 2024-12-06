@@ -1,6 +1,13 @@
 import { FakeData, UserDto, UserMapper } from "tweeter-shared";
+import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 
 export class FollowService {
+  private readonly daoFactory: DaoFactory;
+
+  constructor(daoFactory: DaoFactory) {
+    this.daoFactory = daoFactory;
+  }
+
   public async loadMoreFollowers(
     authToken: string,
     userAlias: string,
@@ -26,7 +33,11 @@ export class FollowService {
     pageSize: number,
     userAlias: string
   ): Promise<[UserDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(UserMapper.fromDto(lastItem), pageSize, userAlias);
+    const [items, hasMore] = FakeData.instance.getPageOfUsers(
+      UserMapper.fromDto(lastItem),
+      pageSize,
+      userAlias
+    );
     const dtos = items.map((user) => UserMapper.toDto(user));
     return [dtos, hasMore];
   }
@@ -71,7 +82,11 @@ export class FollowService {
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
-  public async getIsFollowerStatus(authToken: string, user: UserDto, selectedUser: UserDto): Promise<boolean> {
+  public async getIsFollowerStatus(
+    authToken: string,
+    user: UserDto,
+    selectedUser: UserDto
+  ): Promise<boolean> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.isFollower();
   }

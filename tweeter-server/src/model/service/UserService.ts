@@ -1,9 +1,14 @@
-// TODO KAIDEN need to implement 10 functions here
-
 import { Buffer } from "buffer";
 import { FakeData, UserDto, UserMapper } from "tweeter-shared";
+import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 
 export class UserService {
+  private readonly daoFactory: DaoFactory;
+
+  constructor(daoFactory: DaoFactory) {
+    this.daoFactory = daoFactory;
+  }
+
   public async getUser(authToken: string, alias: string): Promise<UserDto | null> {
     // TODO: Replace with the result of calling server
     const user = FakeData.instance.findUserByAlias(alias);

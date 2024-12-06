@@ -1,6 +1,13 @@
 import { FakeData, StatusDto, StatusMapper } from "tweeter-shared";
+import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 
 export class StatusService {
+  private readonly daoFactory: DaoFactory;
+
+  constructor(daoFactory: DaoFactory) {
+    this.daoFactory = daoFactory;
+  }
+
   public async loadMoreFeedItems(
     authToken: string,
     userAlias: string,
