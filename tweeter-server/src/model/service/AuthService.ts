@@ -15,13 +15,13 @@ export class AuthService {
     this.authDao = daoFactory.createAuthDao();
   }
 
-  public createAuth(): string {
+  public async createAuth(): Promise<string> {
     const token = this.makeToken();
     const timestamp = Date.now();
     const expiresAt = new Date(timestamp + this.EXPIRATION_TIME).toISOString();
 
     const newAuth = new AuthEntity(token, timestamp, expiresAt);
-    this.authDao.createAuth(newAuth);
+    await this.authDao.createAuth(newAuth);
     return token;
   }
 
