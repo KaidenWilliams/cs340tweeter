@@ -4,3 +4,4 @@
 /dist.zip
 /nodejs.zip
 /.server
+/src/config/config.ts
