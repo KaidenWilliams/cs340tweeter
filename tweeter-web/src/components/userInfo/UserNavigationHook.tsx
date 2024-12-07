@@ -1,19 +1,16 @@
 import { useState } from "react";
-import {
-  DisplayUserPresenter,
-  DisplayUserView,
-} from "../../presenter/PostPresenter";
+import { DisplayUserPresenter, DisplayUserView } from "../../presenter/PostPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
 
 const useUserNavigation = () => {
   const { displayErrorMessage } = useToastListener();
-
-  const { setDisplayedUser, currentUser, authToken } = useUserInfo();
+  const { setDisplayedUser, currentUser, authToken, clearUserInfo } = useUserInfo();
 
   const view: DisplayUserView = {
     setDisplayUser: setDisplayedUser,
     displayErrorStatement: displayErrorMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   const [presenter] = useState(new DisplayUserPresenter(view));

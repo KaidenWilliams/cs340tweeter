@@ -6,10 +6,7 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationField from "../AuthenticationField";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import {
-  RegisterPresenter,
-  RegisterView,
-} from "../../../presenter/RegisterPresenter";
+import { RegisterPresenter, RegisterView } from "../../../presenter/RegisterPresenter";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,7 +20,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { updateUserInfo } = useUserInfo();
+  const { updateUserInfo, clearUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const view: RegisterView = {
@@ -34,6 +31,7 @@ const Register = () => {
     setFileExtensionForImage: setImageFileExtension,
     displayErrorStatement: displayErrorMessage,
     navigateToPage: navigate,
+    clearInfoFromUser: clearUserInfo,
   };
 
   const [presenter] = useState(new RegisterPresenter(view));
@@ -43,27 +41,12 @@ const Register = () => {
   };
 
   const isSubmitButtonValid = (): boolean => {
-    return (
-      !!firstName &&
-      !!lastName &&
-      !!alias &&
-      !!password &&
-      !!imageUrl &&
-      !!imageFileExtension
-    );
+    return !!firstName && !!lastName && !!alias && !!password && !!imageUrl && !!imageFileExtension;
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (isEnterKey(event) && isSubmitButtonValid()) {
-      presenter.doRegister(
-        firstName,
-        lastName,
-        alias,
-        password,
-        imageBytes,
-        imageFileExtension,
-        rememberMe
-      );
+      presenter.doRegister(firstName, lastName, alias, password, imageBytes, imageFileExtension, rememberMe);
     }
   };
 

@@ -7,9 +7,7 @@ export interface PagedItemView<T> extends BaseView {
   addItems: (items: T[]) => void;
 }
 
-export abstract class PageItemPresenter<T, U> extends BasePresenter<
-  PagedItemView<T>
-> {
+export abstract class PageItemPresenter<T, U> extends BasePresenter<PagedItemView<T>> {
   private _lastItem: T | null = null;
   private _hasMoreItems: boolean = true;
   private _service: U;
@@ -58,10 +56,7 @@ export abstract class PageItemPresenter<T, U> extends BasePresenter<
     this._hasMoreItems = true;
   }
 
-  protected abstract getMoreItems(
-    authToken: AuthToken,
-    userAlias: string
-  ): Promise<[T[], boolean]>;
+  protected abstract getMoreItems(authToken: AuthToken, userAlias: string): Promise<[T[], boolean]>;
 
   protected abstract getItemDescription(): string;
 }

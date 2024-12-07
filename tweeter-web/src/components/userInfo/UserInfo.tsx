@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./UserInfoHook";
-import {
-  userInfoPresenter,
-  UserInfoView,
-} from "../../presenter/UserInfoPresenter";
+import { userInfoPresenter, UserInfoView } from "../../presenter/UserInfoPresenter";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -14,11 +11,9 @@ const UserInfo = () => {
   const [followerCount, setFollowerCount] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
 
-  const { currentUser, authToken, displayedUser, setDisplayedUser } =
-    useUserInfo();
+  const { currentUser, authToken, displayedUser, setDisplayedUser, clearUserInfo } = useUserInfo();
 
   const view: UserInfoView = {
     setLoading: setIsLoading,
@@ -29,6 +24,7 @@ const UserInfo = () => {
     displayInfoStatement: displayInfoMessage,
     displayErrorStatement: displayErrorMessage,
     clearInfoMessage: clearLastInfoMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   const [presenter] = useState(new userInfoPresenter(view));
@@ -39,8 +35,8 @@ const UserInfo = () => {
 
   useEffect(() => {
     presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-    presenter.setNumbFollowees(authToken!, displayedUser!);
-    presenter.setNumbFollowers(authToken!, displayedUser!);
+    presenter.setNumFollowees(authToken!, displayedUser!);
+    presenter.setNumFollowers(authToken!, displayedUser!);
   }, [displayedUser]);
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
@@ -48,16 +44,12 @@ const UserInfo = () => {
     setDisplayedUser(currentUser!);
   };
 
-  const followDisplayedUser = async (
-    event: React.MouseEvent
-  ): Promise<void> => {
+  const followDisplayedUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
     await presenter.followDisplayedUser(authToken!, displayedUser!);
   };
 
-  const unfollowDisplayedUser = async (
-    event: React.MouseEvent
-  ): Promise<void> => {
+  const unfollowDisplayedUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
     await presenter.unfollowDisplayedUser(authToken!, displayedUser!);
   };
@@ -70,21 +62,13 @@ const UserInfo = () => {
         <div className="container">
           <div className="row">
             <div className="col-auto p-3">
-              <img
-                src={displayedUser.imageUrl}
-                className="img-fluid"
-                width="100"
-                alt="Posting user"
-              />
+              <img src={displayedUser.imageUrl} className="img-fluid" width="100" alt="Posting user" />
             </div>
             <div className="col p-3">
               {displayedUser !== currentUser && (
                 <p id="returnToLoggedInUser">
                   Return to{" "}
-                  <Link
-                    to={""}
-                    onClick={(event) => switchToLoggedInUser(event)}
-                  >
+                  <Link to={""} onClick={(event) => switchToLoggedInUser(event)}>
                     logged in user
                   </Link>
                 </p>

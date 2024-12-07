@@ -32,18 +32,14 @@ const defaultUserInfo: UserInfo = {
   setDisplayedUser: (user) => null,
 };
 
-export const UserInfoContext: Context<UserInfo> =
-  createContext<UserInfo>(defaultUserInfo);
+export const UserInfoContext: Context<UserInfo> = createContext<UserInfo>(defaultUserInfo);
 
 interface Props {
   children: React.ReactNode;
 }
 
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
-  const saveToLocalStorage = (
-    currentUser: User,
-    authToken: AuthToken
-  ): void => {
+  const saveToLocalStorage = (currentUser: User, authToken: AuthToken): void => {
     localStorage.setItem(CURRENT_USER_KEY, currentUser.toJson());
     localStorage.setItem(AUTH_TOKEN_KEY, authToken.toJson());
   };

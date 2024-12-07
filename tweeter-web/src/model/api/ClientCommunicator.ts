@@ -1,4 +1,5 @@
 import { TweeterRequest, TweeterResponse } from "tweeter-shared";
+import { ResponseError } from "./ResponseError";
 
 export class ClientCommunicator {
   private SERVER_URL: string;
@@ -31,15 +32,19 @@ export class ClientCommunicator {
       const resp: Response = await fetch(url, params);
 
       if (resp.ok) {
-        // Be careful with the return type here. resp.json() returns Promise<any> which means there is no type checking on response.
         const response: RES = await resp.json();
         return response;
       } else {
-        const error = await resp.json();
-        throw new Error(error.errorMessage);
+        const errorResponse = await resp.json();
+        const errorMessage = errorResponse.errorMessage ?? `Server error: ${resp.status}`;
+
+        throw new ResponseError(resp.status, errorMessage);
       }
     } catch (error) {
       console.error(error);
+      if (error instanceof ResponseError) {
+        throw error;
+      }
       throw new Error(`Client communicator ${params.method} failed:\n${(error as Error).message}`);
     }
   }

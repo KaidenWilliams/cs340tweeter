@@ -5,16 +5,12 @@ import Image from "react-bootstrap/Image";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
 import { useState } from "react";
-import {
-  AppNavbarView,
-  AppNavbarPresenter,
-} from "../../presenter/AppNavbarPresenter";
+import { AppNavbarView, AppNavbarPresenter } from "../../presenter/AppNavbarPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();
   const { authToken, clearUserInfo } = useUserInfo();
-  const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } = useToastListener();
 
   const view: AppNavbarView = {
     displayInfoStatement: displayInfoMessage,
@@ -30,13 +26,7 @@ const AppNavbar = () => {
   };
 
   return (
-    <Navbar
-      collapseOnSelect
-      className="mb-4"
-      expand="md"
-      bg="primary"
-      variant="dark"
-    >
+    <Navbar collapseOnSelect className="mb-4" expand="md" bg="primary" variant="dark">
       <Container>
         <Navbar.Brand>
           <div className="d-flex flex-row">

@@ -19,7 +19,7 @@ const Login = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { updateUserInfo } = useUserInfo();
+  const { updateUserInfo, clearUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const view: LoginView = {
@@ -27,6 +27,7 @@ const Login = (props: Props) => {
     navigateToPage: navigate,
     updateUser: updateUserInfo,
     displayErrorStatement: displayErrorMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   const [presenter] = useState(new LoginPresenter(view));

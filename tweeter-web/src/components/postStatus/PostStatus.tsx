@@ -2,16 +2,12 @@ import "./PostStatus.css";
 import { useState } from "react";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  PostStatusPresenter,
-  PostStatusView,
-} from "../../presenter/PostStatusPresenter";
+import { PostStatusPresenter, PostStatusView } from "../../presenter/PostStatusPresenter";
 
 const PostStatus = () => {
-  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
 
-  const { currentUser, authToken } = useUserInfo();
+  const { currentUser, authToken, clearUserInfo } = useUserInfo();
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,6 +18,7 @@ const PostStatus = () => {
     displayInfoStatement: displayInfoMessage,
     displayErrorStatement: displayErrorMessage,
     clearInfoMessage: clearLastInfoMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   // Makes an instance of a Presenter, which view then has a reference to
@@ -66,11 +63,7 @@ const PostStatus = () => {
             onClick={(event) => submitPost(event)}
           >
             {isLoading ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             ) : (
               <div>Post Status</div>
             )}

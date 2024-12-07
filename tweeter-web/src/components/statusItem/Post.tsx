@@ -2,10 +2,7 @@ import { Status, Type } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  DisplayUserPresenter,
-  DisplayUserView,
-} from "../../presenter/PostPresenter";
+import { DisplayUserPresenter, DisplayUserView } from "../../presenter/PostPresenter";
 import { useState } from "react";
 
 interface Props {
@@ -13,12 +10,13 @@ interface Props {
 }
 
 const Post = (props: Props) => {
-  const { setDisplayedUser, currentUser, authToken } = useUserInfo();
+  const { setDisplayedUser, currentUser, authToken, clearUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const view: DisplayUserView = {
     setDisplayUser: setDisplayedUser,
     displayErrorStatement: displayErrorMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   const [presenter] = useState(new DisplayUserPresenter(view));
@@ -33,20 +31,11 @@ const Post = (props: Props) => {
     <>
       {props.status.segments.map((segment, index) =>
         segment.type === Type.alias ? (
-          <Link
-            key={index}
-            to={segment.text}
-            onClick={(event) => navigateToUser(event)}
-          >
+          <Link key={index} to={segment.text} onClick={(event) => navigateToUser(event)}>
             {segment.text}
           </Link>
         ) : segment.type === Type.url ? (
-          <a
-            key={index}
-            href={segment.text}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a key={index} href={segment.text} target="_blank" rel="noopener noreferrer">
             {segment.text}
           </a>
         ) : segment.type === Type.newline ? (

@@ -1,5 +1,8 @@
+import { ResponseError } from "../model/api/ResponseError";
+
 export interface BaseView {
   displayErrorStatement: (message: string) => void;
+  clearInfoFromUser: () => void;
 }
 
 export interface MessageView extends BaseView {
@@ -17,18 +20,37 @@ export class BasePresenter<T extends BaseView> {
     return this._view;
   }
 
-  public async doFailureReportingOperation(
-    operation: () => Promise<void>,
-    operationDescription: string
-  ) {
+  public async doFailureReportingOperation(operation: () => Promise<void>, operationDescription: string) {
+    const anyOperation = async () => {
+      try {
+        await operation();
+      } catch (error) {
+        this.view.displayErrorStatement(
+          `Failed to ${operationDescription} because of exception: ${(error as Error).message}`
+        );
+        throw error;
+      }
+    };
+
+    // Don't want to do anything with errors
     try {
-      await operation();
+      return await this.doAnyOperation(anyOperation);
     } catch (error) {
-      this.view.displayErrorStatement(
-        `Failed to ${operationDescription} because of exception: ${
-          (error as Error).message
-        }`
-      );
+      return;
+    }
+  }
+
+  // This is used to return user to login page if they are not authenticated
+  public async doAnyOperation(operation: () => Promise<any>) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (error instanceof ResponseError && error.statusCode === 401) {
+        this.view.clearInfoFromUser();
+        return;
+      }
+      // Only want to throw errors if it is not 401
+      throw error;
     }
   }
 }

@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  PagedItemView,
-  PageItemPresenter,
-} from "../../presenter/PageItemPresenter";
+import { PagedItemView, PageItemPresenter } from "../../presenter/PageItemPresenter";
 
 interface Props<T, U> {
   constructPresenter: (view: PagedItemView<T>) => PageItemPresenter<T, U>;
@@ -17,12 +14,13 @@ const ItemScroller = <T, U>(props: Props<T, U>) => {
   const [items, setItems] = useState<T[]>([]);
   const [newItems, setNewItems] = useState<T[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
-  const { displayedUser, authToken } = useUserInfo();
+  const { displayedUser, authToken, clearUserInfo } = useUserInfo();
 
   // Has an object View, the page is a view. Gives Presenter methods / callbacks that it can call
   const view: PagedItemView<T> = {
     addItems: (newItems: T[]) => setNewItems(newItems),
     displayErrorStatement: displayErrorMessage,
+    clearInfoFromUser: clearUserInfo,
   };
 
   // Makes an instance of a Presenter, which view then has a reference to
@@ -69,10 +67,7 @@ const ItemScroller = <T, U>(props: Props<T, U>) => {
         loader={<h4>Loading...</h4>}
       >
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="row mb-3 mx-0 px-0 border rounded bg-white"
-          >
+          <div key={index} className="row mb-3 mx-0 px-0 border rounded bg-white">
             {props.constructItemComponent(item)}
           </div>
         ))}

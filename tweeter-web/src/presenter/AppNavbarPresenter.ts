@@ -4,7 +4,6 @@ import { BasePresenter, MessageView } from "./BasePresenter";
 
 export interface AppNavbarView extends MessageView {
   clearLastMessage: () => void;
-  clearInfoFromUser: () => void;
 }
 
 export class AppNavbarPresenter extends BasePresenter<AppNavbarView> {

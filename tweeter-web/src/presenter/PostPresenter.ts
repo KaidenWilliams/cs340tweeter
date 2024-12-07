@@ -14,11 +14,7 @@ export class DisplayUserPresenter extends BasePresenter<DisplayUserView> {
     this._userService = new UserService();
   }
 
-  public async displayUser(
-    target: string,
-    currentUser: User | null,
-    authToken: AuthToken
-  ) {
+  public async displayUser(target: string, currentUser: User | null, authToken: AuthToken) {
     const operation = async () => {
       const alias = this.extractAlias(target);
       const user = await this._userService.getUser(authToken, alias);
