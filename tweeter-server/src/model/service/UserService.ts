@@ -2,6 +2,7 @@ import { UserDto } from "tweeter-shared";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 import { UserEntity } from "../entity/User";
 import { AuthService } from "./AuthService";
+import { config } from "../../config/config";
 
 export class UserService {
   private readonly authService;
@@ -73,12 +74,12 @@ export class UserService {
   public async login(alias: string, password: string): Promise<[UserDto, string]> {
     const user = await this.userDao.getUser(alias);
     if (user === null) {
-      throw new Error("Invalid alias");
+      throw new Error(`${config.CLIENT_ERROR}: Invalid alias`);
     }
 
     const validPassword = await this.authService.doPassWordsMatch(password, user.passwordHash);
     if (!validPassword) {
-      throw new Error("Invalid Password");
+      throw new Error(`${config.CLIENT_ERROR}: Invalid Password`);
     }
 
     const authToken = await this.authService.createAuth();

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 import { AuthEntity } from "../entity/Auth";
+import { config } from "../../config/config";
 
 export class AuthService {
   // To make it faster, use lower salt round count (default is 10)
@@ -34,14 +35,14 @@ export class AuthService {
     const authToken = await this.authDao.getAuth(token);
 
     if (!authToken) {
-      throw new Error("No such token found. Please log in.");
+      throw new Error(`${config.AUTH_ERROR}: No such token found. Please log in.`);
     }
     const currentTimestamp = Date.now();
     const expiresAt = new Date(authToken.expiresAt).getTime();
 
     if (currentTimestamp > expiresAt) {
       await this.authDao.deleteAuth(token);
-      throw new Error("Your session has expired. Please log back in.");
+      throw new Error(`${config.AUTH_ERROR}: Your session has expired. Please log back in.`);
     }
   }
 
