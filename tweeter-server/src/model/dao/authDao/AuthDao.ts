@@ -1,4 +1,4 @@
-import { AuthEntity } from "../../entity/Auth";
+import { AuthEntity } from "../../entity/AuthEntity";
 
 export interface AuthDao {
   // Create + Read + Delete

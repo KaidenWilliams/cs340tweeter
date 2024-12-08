@@ -1,6 +1,6 @@
 import { UserDto } from "tweeter-shared";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
-import { UserEntity } from "../entity/User";
+import { UserEntity } from "../entity/UserEntity";
 import { AuthService } from "./AuthService";
 import { config } from "../../config/config";
 

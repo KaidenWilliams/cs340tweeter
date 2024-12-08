@@ -1,4 +1,4 @@
-import { UserEntity } from "../../entity/User";
+import { UserEntity } from "../../entity/UserEntity";
 
 export interface UserDao {
   // Create + Paged Read

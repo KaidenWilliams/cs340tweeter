@@ -1,6 +1,6 @@
 import { DynamoDBDocumentClient, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { UserDao } from "./UserDao";
-import { UserEntity } from "../../entity/User";
+import { UserEntity } from "../../entity/UserEntity";
 
 // Create + Paged Read?
 export class DynamoDbUserDao implements UserDao {

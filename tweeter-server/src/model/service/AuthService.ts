@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
-import { AuthEntity } from "../entity/Auth";
+import { AuthEntity } from "../entity/AuthEntity";
 import { config } from "../../config/config";
 
 export class AuthService {
