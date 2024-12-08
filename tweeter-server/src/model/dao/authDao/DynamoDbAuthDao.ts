@@ -19,8 +19,11 @@ export class DynamoDBAuthDao implements AuthDao {
   }
 
   public async createAuth(auth: AuthEntity) {
+    console.log("Creating auth: ", auth);
+
     const params = {
       TableName: this.tableName,
+
       Item: {
         [this.tokenColumn]: auth.token,
         [this.timestampColumn]: auth.timestamp,
@@ -28,16 +31,22 @@ export class DynamoDBAuthDao implements AuthDao {
       },
     };
 
+    console.log("Params: ", params);
+
     await this.dynamoDbClient.send(new PutCommand(params));
   }
 
   public async getAuth(token: string) {
+    console.log("Getting auth by token: ", token);
+
     const params = {
       TableName: this.tableName,
       Key: {
         [this.tokenColumn]: token,
       },
     };
+
+    console.log("Params: ", params);
 
     const { Item } = await this.dynamoDbClient.send(new GetCommand(params));
 
@@ -48,12 +57,16 @@ export class DynamoDBAuthDao implements AuthDao {
   }
 
   public async deleteAuth(token: string) {
+    console.log("Deleting auth by token: ", token);
+
     const params = {
       TableName: this.tableName,
       Key: {
         [this.tokenColumn]: token,
       },
     };
+
+    console.log("Params: ", params);
 
     await this.dynamoDbClient.send(new DeleteCommand(params));
   }
