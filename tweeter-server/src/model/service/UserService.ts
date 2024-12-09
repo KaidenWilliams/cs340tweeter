@@ -74,7 +74,9 @@ export class UserService {
   }
 
   public async login(alias: string, password: string): Promise<[UserDto, string]> {
-    const user = await this.userDao.getUser(alias);
+    const modifiedAlias = `@${alias}`.toLowerCase();
+
+    const user = await this.userDao.getUser(modifiedAlias);
     if (user === null) {
       throw new Error(`${config.CLIENT_ERROR}: Invalid alias`);
     }
@@ -84,7 +86,7 @@ export class UserService {
       throw new Error(`${config.CLIENT_ERROR}: Invalid Password`);
     }
 
-    const authToken = await this.authService.createAuth(alias);
+    const authToken = await this.authService.createAuth(modifiedAlias);
 
     const createdUserDto: UserDto = {
       firstName: user.firstName,
