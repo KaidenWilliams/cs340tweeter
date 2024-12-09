@@ -7,8 +7,9 @@ import { config } from "../../config/config";
 export class AuthService {
   // To make it faster, use lower salt round count (default is 10)
   private readonly SALT_ROUNDS = 3;
-  // 20 Minutes
-  private readonly EXPIRATION_TIME = 20 * 60 * 1000;
+
+  // 100 Minutes
+  private readonly EXPIRATION_TIME_SECONDS = 100 * 60;
 
   private readonly authDao;
 
@@ -18,8 +19,10 @@ export class AuthService {
 
   public async createAuth(): Promise<string> {
     const token = this.makeToken();
-    const timestamp = Date.now();
-    const expiresAt = new Date(timestamp + this.EXPIRATION_TIME).toISOString();
+
+    // In seconds, not MS
+    const timestamp = Math.floor(Date.now() / 1000);
+    const expiresAt = timestamp + this.EXPIRATION_TIME_SECONDS;
 
     const newAuth = new AuthEntity(token, timestamp, expiresAt);
     await this.authDao.createAuth(newAuth);
@@ -32,15 +35,14 @@ export class AuthService {
   }
 
   public async EnsureValidAuthTokenThrowsError(token: string) {
-    const authToken = await this.authDao.getAuth(token);
+    const authEntity = await this.authDao.getAuth(token);
 
-    if (!authToken) {
+    if (!authEntity) {
       throw new Error(`${config.AUTH_ERROR}: No such token found. Please log in.`);
     }
-    const currentTimestamp = Date.now();
-    const expiresAt = new Date(authToken.expiresAt).getTime();
+    const currentTimestamp = Math.floor(Date.now() / 1000);
 
-    if (currentTimestamp > expiresAt) {
+    if (currentTimestamp > authEntity.expiresAt) {
       await this.authDao.deleteAuth(token);
       throw new Error(`${config.AUTH_ERROR}: Your session has expired. Please log back in.`);
     }
