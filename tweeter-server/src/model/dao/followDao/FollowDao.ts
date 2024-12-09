@@ -8,9 +8,9 @@ export interface FollowDao {
 
   getFollow(followerHandle: string, followeeHandle: string): Promise<FollowEntity | null>;
 
-  getAllFolloweesCountForFollower(followerHandle: string): Promise<number>;
+  getAllFolloweesForFollower(followerHandle: string): Promise<FollowEntity[]>;
 
-  getAllFollowersCountForFollowee(followeeHandle: string): Promise<number>;
+  getAllFollowersForFollowee(followeeHandle: string): Promise<FollowEntity[]>;
 
   getAllFolloweesForFollowerPaginated(
     followerHandle: string,

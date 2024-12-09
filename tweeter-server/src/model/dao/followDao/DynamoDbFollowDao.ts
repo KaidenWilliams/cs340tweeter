@@ -65,7 +65,7 @@ export class DynamoDbFollowDao implements FollowDao {
   }
 
   // GET ALL THE PEOPLE WHO ARE FOLLOWING YOU - SECONDARY INDEX
-  public async getAllFollowersCountForFollowee(followeeHandle: string) {
+  public async getAllFollowersForFollowee(followeeHandle: string): Promise<FollowEntity[]> {
     const params = {
       TableName: this.tableName,
       IndexName: this.secondaryIndexName,
@@ -77,11 +77,15 @@ export class DynamoDbFollowDao implements FollowDao {
 
     const { Items } = await this.dynamoDbClient.send(new QueryCommand(params));
 
-    return Items ? Items.length : 0;
+    return (
+      Items?.map(
+        (item) => new FollowEntity(item[this.followerHandleColumn], item[this.followeeHandleColumn])
+      ) ?? []
+    );
   }
 
   // GET ALL THE PEOPLE YOU ARE FOLLOWING
-  public async getAllFolloweesCountForFollower(followerHandle: string) {
+  public async getAllFolloweesForFollower(followerHandle: string): Promise<FollowEntity[]> {
     const params = {
       TableName: this.tableName,
       KeyConditionExpression: `${this.followerHandleColumn} = :followerHandle`,
@@ -92,7 +96,11 @@ export class DynamoDbFollowDao implements FollowDao {
 
     const { Items } = await this.dynamoDbClient.send(new QueryCommand(params));
 
-    return Items ? Items.length : 0;
+    return (
+      Items?.map(
+        (item) => new FollowEntity(item[this.followerHandleColumn], item[this.followeeHandleColumn])
+      ) ?? []
+    );
   }
 
   public async getAllFollowersForFolloweePaginated(

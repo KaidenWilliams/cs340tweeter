@@ -8,7 +8,7 @@ export class FeedEntity {
 
   constructor(
     public followerAlias: string,
-    public followeeAlias: string,
+    public posterAlias: string,
     public timestamp: number,
     public post: string
   ) {}

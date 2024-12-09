@@ -109,11 +109,11 @@ export class FollowService {
   }
 
   // GET ALL THE PEOPLE WHO ARE FOLLOWING YOU
-
   public async getFollowerCount(authToken: string, user: UserDto): Promise<number> {
     await this.authService.EnsureValidAuthTokenThrowsError(authToken);
 
-    return await this.followDao.getAllFollowersCountForFollowee(user.alias);
+    const items = await this.followDao.getAllFollowersForFollowee(user.alias);
+    return items ? items.length : 0;
   }
 
   // FOLLOWEE IS SYNONYMOUS WITH FOLLOWING. PEOPLE YOU ARE FOLLOWING
@@ -122,7 +122,8 @@ export class FollowService {
   public async getFolloweeCount(authToken: string, user: UserDto): Promise<number> {
     await this.authService.EnsureValidAuthTokenThrowsError(authToken);
 
-    return await this.followDao.getAllFolloweesCountForFollower(user.alias);
+    const items = await this.followDao.getAllFolloweesForFollower(user.alias);
+    return items ? items.length : 0;
   }
 
   public async getIsFollowerStatus(
