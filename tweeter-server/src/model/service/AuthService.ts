@@ -28,7 +28,7 @@ export class AuthService {
 
   public makeToken(): string {
     const random = randomBytes(12);
-    return random.toString("base64").substring(0, 16);
+    return random.toString("base64").substring(0, 16).toLowerCase();
   }
 
   public async EnsureValidAuthTokenThrowsError(token: string) {
