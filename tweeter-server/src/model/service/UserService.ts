@@ -40,31 +40,33 @@ export class UserService {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, string]> {
+    const modifiedAlias = `@${alias}`.toLowerCase();
+
     // 1. Check if user already exists. If so, throw an error.
-    const userThatAlreadyExists = await this.userDao.getUser(alias);
+    const userThatAlreadyExists = await this.userDao.getUser(modifiedAlias);
     if (userThatAlreadyExists != null) {
       throw new Error(`${config.CLIENT_ERROR}: This user has already registered. Please login instead`);
     }
 
     // 2. Send photo to S3 DAO
-    const fileName = `${alias}.${imageFileExtension}`;
+    const fileName = `${modifiedAlias}.${imageFileExtension}`;
     const imageUrl = await this.photoDao.putImage(fileName, userImageBytes);
 
     // 3. Hash Password
     const hashedPassword = await this.authService.hashPassword(password);
 
     // 4. Store User in table
-    const newUserEntity = new UserEntity(alias, hashedPassword, firstName, lastName, imageUrl);
+    const newUserEntity = new UserEntity(modifiedAlias, hashedPassword, firstName, lastName, imageUrl);
     await this.userDao.createUser(newUserEntity);
 
     // 5. Make authToken, put in Database
-    const authToken = await this.authService.createAuth();
+    const authToken = await this.authService.createAuth(modifiedAlias);
 
     // 6. Return a UserDTO
     const createdUserDto: UserDto = {
       firstName: firstName,
       lastName: lastName,
-      alias: alias,
+      alias: modifiedAlias,
       imageUrl: imageUrl,
     };
 
@@ -82,7 +84,7 @@ export class UserService {
       throw new Error(`${config.CLIENT_ERROR}: Invalid Password`);
     }
 
-    const authToken = await this.authService.createAuth();
+    const authToken = await this.authService.createAuth(alias);
 
     const createdUserDto: UserDto = {
       firstName: user.firstName,

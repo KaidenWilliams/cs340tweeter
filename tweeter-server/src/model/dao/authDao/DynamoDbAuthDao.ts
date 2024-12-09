@@ -9,7 +9,7 @@ export class DynamoDBAuthDao implements AuthDao {
   readonly tableName = "auth";
 
   readonly tokenColumn = "token";
-  readonly timestampColumn = "timestamp";
+  readonly aliasColumn = "alias";
   readonly expiresAtColumn = "expiresAt";
 
   private readonly dynamoDbClient: DynamoDBDocumentClient;
@@ -26,7 +26,7 @@ export class DynamoDBAuthDao implements AuthDao {
 
       Item: {
         [this.tokenColumn]: auth.token,
-        [this.timestampColumn]: auth.timestamp,
+        [this.aliasColumn]: auth.alias,
         [this.expiresAtColumn]: auth.expiresAt,
       },
     };
@@ -51,7 +51,7 @@ export class DynamoDBAuthDao implements AuthDao {
     const { Item } = await this.dynamoDbClient.send(new GetCommand(params));
 
     if (Item != null) {
-      return new AuthEntity(Item[this.tokenColumn], Item[this.timestampColumn], Item[this.expiresAtColumn]);
+      return new AuthEntity(Item[this.tokenColumn], Item[this.aliasColumn], Item[this.expiresAtColumn]);
     }
     return null;
   }

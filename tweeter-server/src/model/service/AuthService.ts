@@ -8,8 +8,8 @@ export class AuthService {
   // To make it faster, use lower salt round count (default is 10)
   private readonly SALT_ROUNDS = 3;
 
-  // 1000 Minutes
-  private readonly EXPIRATION_TIME_SECONDS = 1000 * 60;
+  // 10000 Minutes
+  private readonly EXPIRATION_TIME_SECONDS = 10000 * 60;
 
   private readonly authDao;
 
@@ -17,14 +17,13 @@ export class AuthService {
     this.authDao = daoFactory.createAuthDao();
   }
 
-  public async createAuth(): Promise<string> {
+  public async createAuth(alias: string): Promise<string> {
     const token = this.makeToken();
 
     // In seconds, not MS
-    const timestamp = Math.floor(Date.now() / 1000);
-    const expiresAt = timestamp + this.EXPIRATION_TIME_SECONDS;
+    const expiresAt = Math.floor(Date.now() / 1000) + this.EXPIRATION_TIME_SECONDS;
 
-    const newAuth = new AuthEntity(token, timestamp, expiresAt);
+    const newAuth = new AuthEntity(token, alias, expiresAt);
     await this.authDao.createAuth(newAuth);
     return token;
   }
@@ -34,7 +33,7 @@ export class AuthService {
     return random.toString("base64").substring(0, 16).toLowerCase();
   }
 
-  public async EnsureValidAuthTokenThrowsError(token: string) {
+  public async EnsureValidAuthTokenThrowsError(token: string): Promise<string> {
     const authEntity = await this.authDao.getAuth(token);
 
     if (!authEntity) {
@@ -46,6 +45,8 @@ export class AuthService {
       await this.authDao.deleteAuth(token);
       throw new Error(`${config.AUTH_ERROR}: Your session has expired. Please log back in.`);
     }
+
+    return authEntity.alias;
   }
 
   public async deleteAuth(token: string) {

@@ -31,13 +31,13 @@ export class ClientCommunicator {
     try {
       const resp: Response = await fetch(url, params);
 
-      console.log("RESPONSE: ", resp);
-
       if (resp.ok) {
         const response: RES = await resp.json();
+        console.log("RESPONSE: ", response);
         return response;
       } else {
         const errorResponse = await resp.json();
+        console.log("RESPONSE: ", errorResponse);
         const errorMessage = errorResponse.errorMessage ?? `Server error: ${resp.status}`;
 
         throw new ResponseError(resp.status, errorMessage);
