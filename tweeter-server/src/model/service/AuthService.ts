@@ -8,8 +8,8 @@ export class AuthService {
   // To make it faster, use lower salt round count (default is 10)
   private readonly SALT_ROUNDS = 3;
 
-  // 100 Minutes
-  private readonly EXPIRATION_TIME_SECONDS = 100 * 60;
+  // 1000 Minutes
+  private readonly EXPIRATION_TIME_SECONDS = 1000 * 60;
 
   private readonly authDao;
 

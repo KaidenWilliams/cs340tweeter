@@ -31,6 +31,8 @@ export class ClientCommunicator {
     try {
       const resp: Response = await fetch(url, params);
 
+      console.log("RESPONSE: ", resp);
+
       if (resp.ok) {
         const response: RES = await resp.json();
         return response;

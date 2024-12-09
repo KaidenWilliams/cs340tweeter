@@ -59,6 +59,8 @@ export class ServerFacade {
   // FOLLOWSERVICE METHODS
 
   public async getIsFollowing(request: GetIsFollowerRequest): Promise<boolean> {
+    console.log("1. CALLED GetIsFollowing");
+
     const response = await this.clientCommunicator.doPost<GetIsFollowerRequest, GetIsFollowerResponse>(
       request,
       this.endpoints.isFollowing
@@ -72,6 +74,8 @@ export class ServerFacade {
   }
 
   public async getMoreFollowers(request: PagedUserItemRequest): Promise<[User[], boolean]> {
+    console.log("2. CALLED GetMoreFollowers");
+
     const response = await this.clientCommunicator.doPost<PagedUserItemRequest, PagedUserItemResponse>(
       request,
       this.endpoints.followerList
@@ -97,6 +101,7 @@ export class ServerFacade {
   }
 
   public async getMoreFollowees(request: PagedUserItemRequest): Promise<[User[], boolean]> {
+    console.log("3. CALLED GetMoreFollowees");
     const response = await this.clientCommunicator.doPost<PagedUserItemRequest, PagedUserItemResponse>(
       request,
       this.endpoints.followeeList
@@ -120,6 +125,7 @@ export class ServerFacade {
   }
 
   public async getCountFollower(request: GetCountRequest): Promise<number> {
+    console.log("4. CALLED GetCountFollower");
     const response = await this.clientCommunicator.doPost<GetCountRequest, GetCountResponse>(
       request,
       this.endpoints.followerCount
@@ -134,6 +140,7 @@ export class ServerFacade {
   }
 
   public async getCountFollowee(request: GetCountRequest): Promise<number> {
+    console.log("5. CALLED GetCountFollowee");
     const response = await this.clientCommunicator.doPost<GetCountRequest, GetCountResponse>(
       request,
       this.endpoints.followeeCount
@@ -148,6 +155,7 @@ export class ServerFacade {
   }
 
   public async doFollow(request: ChangeFollowStateRequest): Promise<[number, number]> {
+    console.log("6. CALLED DoFollow");
     const response = await this.clientCommunicator.doPost<
       ChangeFollowStateRequest,
       ChangeFollowStateResponse
@@ -161,6 +169,7 @@ export class ServerFacade {
   }
 
   public async doUnfollow(request: ChangeFollowStateRequest): Promise<[number, number]> {
+    console.log("7. CALLED DoUnfollow");
     const response = await this.clientCommunicator.doPost<
       ChangeFollowStateRequest,
       ChangeFollowStateResponse
@@ -175,6 +184,7 @@ export class ServerFacade {
 
   // USERSERVICE METHODS
   public async grabUser(request: GetUserRequest): Promise<User | null> {
+    console.log("8. CALLED GrabUser");
     const response = await this.clientCommunicator.doPost<GetUserRequest, GetUserResponse>(
       request,
       this.endpoints.userGrab
@@ -188,6 +198,7 @@ export class ServerFacade {
   }
 
   public async doRegister(request: RegisterRequest): Promise<[User, AuthToken]> {
+    console.log("9. CALLED DoRegister");
     const response = await this.clientCommunicator.doPost<RegisterRequest, SignInResponse>(
       request,
       this.endpoints.authRegister
@@ -203,6 +214,7 @@ export class ServerFacade {
   }
 
   public async doLogin(request: LoginRequest): Promise<[User, AuthToken]> {
+    console.log("10. CALLED DoLogin");
     const response = await this.clientCommunicator.doPost<LoginRequest, SignInResponse>(
       request,
       this.endpoints.authLogin
@@ -218,6 +230,7 @@ export class ServerFacade {
   }
 
   public async doLogout(request: LogoutRequest): Promise<void> {
+    console.log("11. CALLED DoLogout");
     const response = await this.clientCommunicator.doPost<LogoutRequest, TweeterResponse>(
       request,
       this.endpoints.authLogout
@@ -231,6 +244,7 @@ export class ServerFacade {
   // STATUSSERVICE METHODS
 
   public async getFeedItems(request: PagedStatusItemRequest): Promise<[Status[], boolean]> {
+    console.log("12. CALLED GetFeedItems");
     const response = await this.clientCommunicator.doPost<PagedStatusItemRequest, PagedStatusItemResponse>(
       request,
       this.endpoints.feedList
@@ -252,6 +266,7 @@ export class ServerFacade {
   }
 
   public async getStoryItems(request: PagedStatusItemRequest): Promise<[Status[], boolean]> {
+    console.log("13. CALLED GetStoryItems");
     const response = await this.clientCommunicator.doPost<PagedStatusItemRequest, PagedStatusItemResponse>(
       request,
       this.endpoints.storyList
@@ -273,6 +288,7 @@ export class ServerFacade {
   }
 
   public async createStatus(request: PostStatusRequest): Promise<void> {
+    console.log("14. CALLED CreateStatus");
     const response = await this.clientCommunicator.doPost<PostStatusRequest, TweeterResponse>(
       request,
       this.endpoints.statusUpload

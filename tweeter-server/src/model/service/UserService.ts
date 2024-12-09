@@ -43,7 +43,7 @@ export class UserService {
     // 1. Check if user already exists. If so, throw an error.
     const userThatAlreadyExists = await this.userDao.getUser(alias);
     if (userThatAlreadyExists != null) {
-      throw new Error("This user has already registered. Please login instead");
+      throw new Error(`${config.CLIENT_ERROR}: This user has already registered. Please login instead`);
     }
 
     // 2. Send photo to S3 DAO
