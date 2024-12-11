@@ -51,23 +51,18 @@ export class FillUserTableDao {
   }
 
   private createPutUserRequest(user: User, hashedPassword: string) {
-    const item = {
-      Item: {
-        [this.aliasColumn]: user.alias,
-        [this.passwordHashColumn]: hashedPassword,
-        [this.firstNameColumn]: user.firstName,
-        [this.lastNameColumn]: user.lastName,
-        [this.imageUrlColumn]: user.imageUrl,
-      },
-    };
-
     return {
       PutRequest: {
-        Item: item,
+        Item: {
+          [this.aliasColumn]: user.alias,
+          [this.passwordHashColumn]: hashedPassword,
+          [this.firstNameColumn]: user.firstName,
+          [this.lastNameColumn]: user.lastName,
+          [this.imageUrlColumn]: user.imageUrl,
+        },
       },
     };
   }
-
   private async putUnprocessedItems(resp: BatchWriteCommandOutput, params: BatchWriteCommandInput) {
     let delay = 10;
     let attempts = 0;
