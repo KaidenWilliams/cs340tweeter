@@ -1,23 +1,24 @@
-import { FakeData, StatusDto, StatusMapper, UserDto } from "tweeter-shared";
+import { StatusDto, UserDto } from "tweeter-shared";
 import { DaoFactory } from "../dao/daoFactory/DaoFactory";
 import { AuthService } from "./AuthService";
 import { StoryEntity } from "../entity/StoryEntity";
-import { FeedEntity } from "../entity/FeedEntity";
+import { QueueService } from "./QueueService";
 
 export class StatusService {
   private readonly authService;
+  private readonly queueService;
 
   private readonly storyDao;
   private readonly feedDao;
   private readonly userDao;
-  private readonly followDao;
 
   constructor(daoFactory: DaoFactory) {
     this.authService = new AuthService(daoFactory);
+    this.queueService = new QueueService();
+
     this.storyDao = daoFactory.createStoryDao();
     this.feedDao = daoFactory.createFeedDao();
     this.userDao = daoFactory.createUserDao();
-    this.followDao = daoFactory.createFollowDao();
   }
 
   public async loadMoreFeedItems(
@@ -106,18 +107,7 @@ export class StatusService {
     const storyEntity = new StoryEntity(newStatus.userDto.alias, newStatus.timestamp, newStatus.post);
     await this.storyDao.createStory(storyEntity);
 
-    // Put in feed
-    const followEntities = await this.followDao.getAllFollowersForFollowee(newStatus.userDto.alias);
-
-    for (const followEntity of followEntities) {
-      const feedEntity = new FeedEntity(
-        followEntity.followerHandle,
-        newStatus.userDto.alias,
-        newStatus.timestamp,
-        newStatus.post
-      );
-      await this.feedDao.createStory(feedEntity);
-    }
+    await this.queueService.postStatusToQueue(newStatus);
 
     return;
   }

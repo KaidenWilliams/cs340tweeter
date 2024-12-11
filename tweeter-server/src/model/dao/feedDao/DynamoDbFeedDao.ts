@@ -18,7 +18,7 @@ export class DynamoDbFeedDao implements FeedDao {
     this.dynamoDbClient = dynamoDbClient;
   }
 
-  public async createStory(feed: FeedEntity) {
+  public async createFeed(feed: FeedEntity) {
     console.log("Creating feed: ", feed);
 
     const params = {

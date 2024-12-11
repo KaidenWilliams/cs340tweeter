@@ -3,7 +3,7 @@ import { FeedEntity } from "../../entity/FeedEntity";
 export interface FeedDao {
   // Create + Paged Read
 
-  createStory(feed: FeedEntity): Promise<void>;
+  createFeed(feed: FeedEntity): Promise<void>;
 
   getFeedByAliasPaginated(
     followerAlias: string,
