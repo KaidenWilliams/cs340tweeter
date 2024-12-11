@@ -5,8 +5,8 @@ import { FeedEntity } from "../entity/FeedEntity";
 
 export class QueueService {
   private sqsClient: SQSClient;
-  private POST_STATUS_QUEUE_URL = process.env.POST_STATUS_QUEUE_URL || "";
-  private POST_FEED_QUEUE_URL = process.env.POST_FEED_QUEUE_URL || "";
+  private POST_STATUS_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/214630358865/PostStatusQueue";
+  private POST_FEED_QUEUE_URL = "https://sqs.us-east-2.amazonaws.com/214630358865/PostFeedQueue";
 
   constructor() {
     this.sqsClient = new SQSClient({ region: config.AWS_REGION });

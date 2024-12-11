@@ -21,6 +21,7 @@
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
     "date-fns": "^3.3.1",
+    "tweeter-server": "file:",
     "tweeter-shared": "file:../tweeter-shared",
     "uuid": "^9.0.1"
   },

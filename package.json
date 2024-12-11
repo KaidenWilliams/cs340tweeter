@@ -9,6 +9,7 @@
   "author": "JWilkerson",
   "license": "ISC",
   "dependencies": {
+    "tweeter": "file:",
     "vite-plugin-dts": "^3.7.3"
   },
   "devDependencies": {
