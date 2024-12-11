@@ -8,6 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import * as bcrypt from "bcryptjs";
 import { User } from "tweeter-shared";
+import { config } from "../config/config";
 
 export class FillUserTableDao {
   //
@@ -21,7 +22,7 @@ export class FillUserTableDao {
   readonly lastNameColumn = "lastName";
   readonly imageUrlColumn = "imageUrl";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient({ region: config.AWS_REGION }));
 
   async createUsers(userList: User[], password: string) {
     if (userList.length == 0) {

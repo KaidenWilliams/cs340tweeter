@@ -5,6 +5,7 @@ import {
   BatchWriteCommandOutput,
   DynamoDBDocumentClient,
 } from "@aws-sdk/lib-dynamodb";
+import { config } from "../config/config";
 
 export class FillFollowTableDao {
   readonly tableName = "follow";
@@ -14,7 +15,7 @@ export class FillFollowTableDao {
   // followeeHandle: person who is BEING FOLLOWED
   readonly followeeHandleColumn = "followeeHandle";
 
-  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
+  private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient({ region: config.AWS_REGION }));
 
   async createFollows(followeeAlias: string, followerAliasList: string[]) {
     if (followerAliasList.length == 0) {
