@@ -1,6 +1,11 @@
 {
   "name": "tweeter",
   "version": "1.0.0",
+  "workspaces": [
+    "tweeter-shared",
+    "tweeter-web",
+    "tweeter-server"
+  ],
   "author": "JWilkerson",
   "license": "ISC",
   "dependencies": {

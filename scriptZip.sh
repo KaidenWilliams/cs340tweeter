@@ -27,7 +27,6 @@ cd ..
 # 3. Build tweeter-server
 echo "Building tweeter-server..."
 cd tweeter-server
-npm install
 npm run build
 cd ..
 
@@ -36,13 +35,13 @@ cd ..
 # # First, remove the old nodejs/node_modules if it exists
 # # Then, Copy the entire node_modules directory
 
-echo "Replacing entire node_modules in nodejs folder..."
-if [ -d "tweeter-server/nodejs/node_modules" ]; then
-    rm -rf "tweeter-server/nodejs/node_modules"
-fi
+# echo "Replacing entire node_modules in nodejs folder..."
+# if [ -d "tweeter-server/nodejs/node_modules" ]; then
+#     rm -rf "tweeter-server/nodejs/node_modules"
+# fi
 
-echo "Copying node_modules from tweeter-server to nodejs folder..."
-cp -r "tweeter-server/node_modules" "tweeter-server/nodejs/"
+# echo "Copying node_modules from tweeter-server to nodejs folder..."
+# cp -rL "tweeter-server/node_modules" "tweeter-server/nodejs/"
 
 
 
