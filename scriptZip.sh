@@ -46,18 +46,18 @@ cd ..
 
 
 # 5. Handle tweeter-shared module replacement
-echo "Updating tweeter-shared in server node_modules..."
-SHARED_PATH="tweeter-shared"
-SERVER_MODULES_PATH="tweeter-server/nodejs/node_modules/tweeter-shared"
+# echo "Updating tweeter-shared in server node_modules..."
+# SHARED_PATH="tweeter-shared"
+# SERVER_MODULES_PATH="tweeter-server/nodejs/node_modules/tweeter-shared"
 
 
-# Remove existing tweeter-shared if it exists
-if [ -d "$SERVER_MODULES_PATH" ]; then
-    rm -rf "$SERVER_MODULES_PATH"
-fi
+# # Remove existing tweeter-shared if it exists
+# if [ -d "$SERVER_MODULES_PATH" ]; then
+#     rm -rf "$SERVER_MODULES_PATH"
+# fi
 
-# Copy new tweeter-shared
-cp -r "$SHARED_PATH" "$SERVER_MODULES_PATH"
+# # Copy new tweeter-shared
+# cp -r "$SHARED_PATH" "$SERVER_MODULES_PATH"
 
 
 
